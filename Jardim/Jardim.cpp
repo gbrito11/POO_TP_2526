@@ -48,11 +48,11 @@ Celula& Jardim::getSolo(int l, int c) {
 }
 
 void Jardim::adicionarPlanta(Planta* /*p*/, int /*l*/, int /*c*/) {
-    // TODO: implementar quando Planta estiver definida
+
 }
 
 void Jardim::adicionarFerramenta(Ferramenta* /*f*/, int /*l*/, int /*c*/) {
-    // TODO: implementar quando Ferramenta estiver definida
+
 }
 
 

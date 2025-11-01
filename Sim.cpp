@@ -34,7 +34,7 @@ void Sim::processarComando(const std::string& linha) {
     if (cmd == "jardim") {
         int linhas, colunas;
         if (ss >> linhas >> colunas)
-            cmdJardim(linhas, colunas);
+            if(linhas > 0 && colunas > 0 && linhas < 27 && colunas < 27) cmdJardim(linhas, colunas);
         else
             std::cout << "Uso: jardim <linhas> <colunas>\n";
 
@@ -109,7 +109,6 @@ void Sim::processarComando(const std::string& linha) {
             case 'c':
                 cmdCima();
             default:
-                std::cout << "MOvimento inválido!\n";
                 break;
 
         }
@@ -136,10 +135,10 @@ void Sim::processarComando(const std::string& linha) {
 ///////////////////////////////////////////////////////////////77
 ///Comandos informacao ao utilizador
 ///////////////////////////////////////////////////////////////
-    else if (cmd == "Lplantas") {
+    else if (cmd == "lplantas") {
         std::cout<<"Informação de todas as plantas no jardim:\n";
         cmdLPlantas();
-    }else if (cmd == "Lplanta") {
+    }else if (cmd == "lplanta") {
         std::string pos;
         if (ss >> pos ) {
             if (pos.size() != 2) {
@@ -151,12 +150,12 @@ void Sim::processarComando(const std::string& linha) {
                 cmdLPlanta(linha,coluna);
             }
         }else {
-            std::cout << "Uso: Lplanat <pos>\n";
+            std::cout << "Uso: lplanat <pos>\n";
         }
-    }else if (cmd == "Larea") {
+    }else if (cmd == "larea") {
         std::cout<<"Informações sobre o jardim :\n";
         cmdLArea();
-    }else if (cmd == "Lsolo") {
+    }else if (cmd == "lsolo") {
         std::string pos;
         int n = 0;
 
@@ -179,9 +178,9 @@ void Sim::processarComando(const std::string& linha) {
             }
         }
         else {
-            std::cout << "Uso: Lsolo <posição> [<n>]\n";
+            std::cout << "Uso: lsolo <posição> [<n>]\n";
         }
-    }else if (cmd == "Lferr") {
+    }else if (cmd == "lferr") {
         std::cout<<"Ferramentas do Jardineiro:\n";
         cmdLferr();
     }
