@@ -33,9 +33,9 @@ void Jardim::mostrar() {
 
     // Cada linha, com régua à esquerda e à direita
     for (int l = 0; l < linhas && l < 26; l++) {
-        std::cout << letras[l] << "  ";  // Letra da linha à esquerda
+        std::cout << letras[l] << " ";  // Letra da linha à esquerda
         for (int c = 0; c < colunas && c < 26; c++) {
-            std::cout << mapa[l][c].mostrar() << ' '; // Mostra conteúdo da célula
+            std::cout << mapa[l][c].mostrar() << '.'; // Mostra conteúdo da célula
         }
         std::cout << '\n';
     }
