@@ -260,25 +260,29 @@ void Sim::cmdCompraFerramenta(char tipo) {
 }
 
 //MOvimentso do jardineiro-----------------------------
-void cmdEsquerda() {
+void Sim::cmdEsquerda() {
+    std::cout<<"Jardineiro andou para a esquerda\n";
     //esquerda
 }
-void cmdDireita() {
+void Sim::cmdDireita() {
+    std::cout<<"Jardineiro andou para a direita\n";
     //direita
 }
-void cmdCima() {
+void Sim::cmdCima() {
+    std::cout<<"Jardineiro andou para cima\n";
     //cima
 }
-void cmdBaixo() {
+void Sim::cmdBaixo() {
+    std::cout<<"Jardineiro andou para baixo\n";
     //baixo
 }
 
-void cmdEntra(char l,char c) {
+void Sim::cmdEntra(char l,char c) {
     std::cout<<"Jardineiro vai entrar na posição <"<<l<<"> <"<< c<<">" << std::endl;
     //implementar o jardineiro a esntrar
 }
 
-void cmdSai() {
+void Sim::cmdSai() {
     std::cout<<"Jardineiro a sair do jardim..."<<std::endl;
 }
 
