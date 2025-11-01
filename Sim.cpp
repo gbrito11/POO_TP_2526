@@ -301,10 +301,12 @@ void Sim::cmdLArea() {
 
 void Sim::cmdLSolo(char l, char c) {
     // código para 1 célula
+    std::cout<<"Informacao do solo";
 }
 
 void Sim::cmdLSolo(char l, char c, int n) {
     // código para n células
+    std::cout<<"Informacao do solo";
 }
 
 void Sim::cmdLferr() {
