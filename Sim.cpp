@@ -6,6 +6,7 @@
 #include "Sim.h"
 #include "Jardim/Jardim.h"
 #include "Jardineiro.h"
+#include "Planta/Exotica.h"
 
 Sim::Sim() : jardim(), jardineiro(),emExecucao(true){}
 
@@ -90,6 +91,11 @@ void Sim::processarComando(const std::string& linha) {
         if(tipo== 'g' || tipo == 'a' || tipo == 't' || tipo == 'z') {
             cmdCompraFerramenta(tipo);
         }
+    }else if(cmd == "pega") {
+        int n;
+        ss >> n;
+        std::cout << "A pega ferramenta\n";
+        cmdPega(n);
     }
 /////////////////////////////////////////////////////
 ///Movimentso do Jardineiro
@@ -135,7 +141,9 @@ void Sim::processarComando(const std::string& linha) {
 ///////////////////////////////////////////////////////////////77
 ///Comandos informacao ao utilizador
 ///////////////////////////////////////////////////////////////
-    else if (cmd == "lplantas") {
+    else if (cmd == "info") {
+        cmdInfo();
+    }else if (cmd == "lplantas") {
         std::cout<<"Informação de todas as plantas no jardim:\n";
         cmdLPlantas();
     }else if (cmd == "lplanta") {
@@ -227,7 +235,8 @@ void Sim::processarComando(const std::string& linha) {
 
 void Sim::cmdJardim(int l,int c) {
     delete jardim;
-    jardim = new Jardim(l,c);
+    jardim = new Jardim();
+    jardim->cria(c,l);
     std::cout << "Jardim criado com " << l << "x" << c << " posições.\n";
     jardim->mostrar();
 }
@@ -239,8 +248,17 @@ void Sim::cmdPlanta( char l, char c , std::string tipo) {
         std::cout << "Erro: ainda não existe um jardim.\n";
         return;
     }
+    int col = jardim->LetraNum(c);
+    int lin = jardim->LetraNum(l);
+    if (tipo =="exotica" ){
+        std::cout << " -> Criar Planta Exótica\n";
+        Planta* p = new Exotica();
+        jardim->addPlanta(p,lin,col);
+        jardim->mostrar();
+    }
+
     std::cout << "Plantar tipo '" << tipo << "' na posição : <" << l <<"> <"<< c << ">" ".\n";
-    // adicioanr a planta
+
 }
 
 void Sim::cmdColhe(char l, char c) {
@@ -257,6 +275,10 @@ void Sim::cmdCompraFerramenta(char tipo) {
     std::cout << "A comprar ferramenta...\n";
     // chama para comprar a ferramenta
 }
+void Sim::cmdPega(int n) {
+    std::cout<<"Pegou na ferramenta numero "<< n << std::endl;
+}
+
 
 //MOvimentso do jardineiro-----------------------------
 void Sim::cmdEsquerda() {
@@ -286,6 +308,29 @@ void Sim::cmdSai() {
 }
 
 //Comandos informacao ao utilizador------------------------------------------------------
+void Sim::cmdInfo() {
+    std::cout << "\n=== COMANDOS DISPONÍVEIS ===\n";
+    std::cout << "jardim <linhas> <colunas> - Criar jardim (max 26x26)\n";
+    std::cout << "avanca [n] - Avancar n instantes (padrão: 1)\n";
+    std::cout << "lplantas - Listar todas as plantas\n";
+    std::cout << "lplanta <pos> - Listar planta na posicão (ex: lplanta ab)\n";
+    std::cout << "larea - Listar todas as posicões não vazias\n";
+    std::cout << "lsolo <pos> [raio] - Listar solo na posicão\n";
+    std::cout << "lferr - Listar ferramentas do jardineiro\n";
+    std::cout << "colhe <pos> - Colher planta (ex: colhe fb)\n";
+    std::cout << "planta <pos> <tipo> - Plantar (tipo: c/r/e/x)\n";
+    std::cout << "larga - Largar ferramenta da mão\n";
+    std::cout << "pega <num> - Pegar ferramenta por número de série\n";
+    std::cout << "compra <tipo> - Comprar ferramenta (tipo: g/a/t/z)\n";
+    std::cout << "e/d/c/b - Mover jardineiro (esquerda/direita/cima/baixo)\n";
+    std::cout << "entra <pos> - Jardineiro entra no jardim\n";
+    std::cout << "sai - Jardineiro sai do jardim\n";
+    std::cout << "grava <nome> - Gravar estado do jardim\n";
+    std::cout << "recupera <nome> - Recuperar estado gravado\n";
+    std::cout << "apaga <nome> - Apagar estado gravado\n";
+    std::cout << "executa <ficheiro> - Executar comandos de ficheiro\n";
+    std::cout << "fim - Terminar simulacão\n\n";
+}
 
 void Sim::cmdLPlantas() {
     std::cout << "Informação de todas as plantas no jardim.\n";
@@ -344,3 +389,4 @@ void Sim::cmdExecuta(std::string comandos) {
     std::cout<<"A executar comandos..."<<std::endl;
     //executa comandos de um ficheiro para uo jogo
 }
+

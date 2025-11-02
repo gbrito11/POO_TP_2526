@@ -2,15 +2,14 @@
 // Created by gbrito11 on 19/10/2025.
 //
 
-#ifndef TP_CACTO_H
-#define TP_CACTO_H
+#ifndef TP_PLANTAEXÓTICA_H
+#define TP_PLANTAEXÓTICA_H
 #include "Planta.h"
 
-class Cacto : public Planta {
+class Exotica : public Planta {
 public:
-    Cacto();
-    ~Cacto() override;
-
+    Exotica();
+    ~Exotica() override;
 
     void time() override;
     void multiplica() override;
@@ -23,5 +22,6 @@ public:
     void darNutrientes() override;
 };
 
+//a cada 3 instantes vai fazer chover, adiciona mais 10 de agua a todas plantas
 
-#endif //TP_CACTO_H
+#endif //TP_PLANTAEXÓTICA_H

@@ -11,23 +11,38 @@ class Planta;
 
 class Jardim {
 public:
-    explicit Jardim(int linhas, int colunas);
+    Jardim();
+
     ~Jardim();
 
+
+    void addPlanta(Planta* p, int l, int c);
+    void addFerramenta(Ferramenta* f, int l, int c);
+    void RandomCelula(int& x, int& y);
+    void limpaCelulas();
+    char LetraLinha(int line);
+    char LetraColuna(int column);
+    char MostraCelula(int x, int y);
+    Ferramenta* RandomFerramenta();
+    void cria(int l, int c);
     void mostrar();
+    bool criada();
+    bool PosValid(int x, int y);
+    int getLinhas();
+    int getColunas();
+    int LetraNum(char l);
 
-    Celula& getSolo(int l, int c);
+    Celula& getCelula(int x, int y);
 
-    void adicionarPlanta(Planta* p, int l, int c);
-
-    void adicionarFerramenta(Ferramenta* f, int l, int c);
-    Celula **mapa;
 
 private:
-
+    Celula **celulas;
     int linhas, colunas;
-
     Jardineiro* jardineiro;
+    bool varIsCreated;
+
+
+
 };
 
 

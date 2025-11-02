@@ -10,19 +10,29 @@ class Jardineiro;
 
 class Celula {
 public:
-    Celula(char c);
+
     Celula();
+    ~Celula();
     char mostrar() const;
     char getCharVisivel(const Jardineiro* jardineiro) const;
-    void alterarAgua(int delta);
-    void alterarNutrientes(int delta);
+
+    int getAgua();
+    int getNutrientes();
+    Planta* getPlanta();
+    Ferramenta* getFerramenta();
+
+    void setAgua(int agua);
+    void setNutrientes(int nutrientes);
+    void setPlanta(Planta* planta);
+    void setFerramenta(Ferramenta* ferramenta);
 
 private:
     int agua = 0;
     int nutrientes = 0;
-    Planta* planta = nullptr;
-    Ferramenta* ferramenta = nullptr;
-    char conteudo = ' ';
+    Planta* planta;
+    Ferramenta* ferramenta;
+    char type = ' ';
+
 };
 
 

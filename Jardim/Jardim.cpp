@@ -5,57 +5,138 @@
 #include "Jardim.h"
 #include <iostream>
 #include "Celula.h"
+#include "../Jardineiro.h"
+#include "../Ferranentas/Ferramenta.h"
+#include "../Planta/Planta.h"
 
-Jardim::Jardim(int linhas, int colunas) : linhas(linhas), colunas(colunas) {
-    mapa = new Celula*[linhas];
-    for (int i = 0; i < linhas; i++) {
-        mapa[i] = new Celula[colunas];
+Jardim::Jardim() : colunas(0), linhas(0), varIsCreated(false), jardineiro(nullptr), celulas(nullptr) {}
+
+Jardim::~Jardim() {
+    if (celulas != nullptr) {
+        for (int i = 0; i < linhas; i++) {
+            delete[] celulas[i];
+        }
+        delete[] celulas;
+    }
+
+    if (jardineiro != nullptr) {
+        delete jardineiro;
     }
 }
+void Jardim::cria(int c, int l) {
+    linhas = c;
+    colunas= l;
 
-
-
-Jardim::~Jardim() {}
+    celulas = new Celula*[linhas];
+    for (int i = 0; i < linhas; i++) {
+        celulas[i] = new Celula[colunas];
+    }
+    // adicionar logica de colocar 3 ferramentas aleatórias em posições aleatórias
+    varIsCreated = true;
+    mostrar();
+}
 
 void Jardim::mostrar() {
-    const char letras[26] = {
-        'A','B','C','D','E','F','G','H','I','J',
-        'K','L','M','N','O','P','Q','R','S','T',
-        'U','V','W','X','Y','Z'
-    };
 
-    std::cout << "Jardim:\n   ";
+    std::cout << "\n ";
 
-    // Cabeçalho das colunas (topo)
-    for (int c = 0; c < colunas && c < 26; c++)
-        std::cout << letras[c] << ' ';
+    //print do header
+    for (int c = 0; c < colunas; c++) {
+        std::cout << LetraColuna(c) << ' ';
+    }
     std::cout << '\n';
 
-    // Cada linha, com régua à esquerda e à direita
-    for (int l = 0; l < linhas && l < 26; l++) {
-        std::cout << letras[l] << "  ";  // Letra da linha à esquerda
-        for (int c = 0; c < colunas && c < 26; c++) {
-            std::cout << mapa[l][c].mostrar() << ' '; // Mostra conteúdo da célula
+    for (int l = 0; l < linhas; l++) {
+        // Letra da linha à esquerda em MAIÚSCULA
+        std::cout << LetraLinha(l) << "  ";
+
+        // Conteúdo de cada célula
+        for (int c = 0; c < colunas; c++) {
+            std::cout << MostraCelula(l, c) << ' ';
         }
+
         std::cout << '\n';
     }
+    std::cout << '\n';
 
 
 }
 
-Celula& Jardim::getSolo(int l, int c) {
-    return mapa[l][c];
+char Jardim::MostraCelula(int l, int c) {
+    Celula& celula = celulas[l][c];
+
+    // Prioridade: jardineiro > planta > ferramenta > espaço vazio
+    if (jardineiro != nullptr && jardineiro->noJardim() &&
+        jardineiro->getLine() == l && jardineiro->getCol() == c) {
+        return '*';
+        }
+
+    if (celula.getPlanta() != nullptr)
+        return celula.getPlanta()->getType();
+
+    if (celula.getFerramenta() != nullptr)
+        return celula.getFerramenta()->getType();
+
+    return '.';  // Posição vazia
 }
 
-void Jardim::adicionarPlanta(Planta* /*p*/, int /*l*/, int /*c*/) {
 
+void Jardim::addPlanta(Planta* p, int x, int y) {
+    celulas[x][y].setPlanta(p);
+    mostrar();
 }
 
-void Jardim::adicionarFerramenta(Ferramenta* /*f*/, int /*l*/, int /*c*/) {
-
+void Jardim::addFerramenta(Ferramenta* f, int x, int y) {
+    // implementar depois
 }
 
 
+int Jardim::getLinhas() {
+    return linhas;
+}
+int Jardim::getColunas() {
+    return colunas;
+}
+bool Jardim::criada() {
+    return this->varIsCreated;
+}
+
+char Jardim::LetraLinha(int l) {
+    return 'A' + l;  // Maiúscula para a régua
+}
+
+char Jardim::LetraColuna(int c) {
+    return 'A' + c;  // Maiúscula para a régua
+}
+
+void Jardim::RandomCelula(int& x, int& y) {
+    // implementar depois
+}
+
+void Jardim::limpaCelulas() {
+    // implementar depois
+}
+
+Ferramenta* Jardim::RandomFerramenta() {
+    // implementar depois
+    return nullptr;
+}
+
+
+
+bool Jardim::PosValid(int x, int y) {
+    // implementar depois
+    return false;
+}
+
+Celula& Jardim::getCelula(int x, int y) {
+    return celulas[x][y];
+}
+
+int Jardim::LetraNum(char letra) {
+    letra = toupper(letra);
+    return letra - 'A';
+}
 
 
 

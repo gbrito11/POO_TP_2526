@@ -14,8 +14,8 @@ add_executable(TP main.cpp
         Jardineiro.h
         Ferranentas/Regador.cpp
         Ferranentas/Regador.h
-        Ferranentas/PacoteAdubo.cpp
-        Ferranentas/PacoteAdubo.h
+        Ferranentas/Adubo.cpp
+        Ferranentas/Adubo.h
         Ferranentas/Tesoura.cpp
         Ferranentas/Tesoura.h
         Ferranentas/Ferramenta.cpp
@@ -26,7 +26,9 @@ add_executable(TP main.cpp
         Planta/Roseira.h
         Planta/ErvaDaninha.cpp
         Planta/ErvaDaninha.h
-        Planta/PlantaExotica.cpp
-        Planta/PlantaExotica.h
+        Planta/Exotica.cpp
+        Planta/Exotica.h
         Planta/Planta.cpp
-        Planta/Planta.h)
+        Planta/Planta.h
+        Ferranentas/FerramentaZ.cpp
+        Ferranentas/FerramentaZ.h)

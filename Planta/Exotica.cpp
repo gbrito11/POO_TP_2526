@@ -1,0 +1,45 @@
+//
+// Created by gbrito11 on 19/10/2025.
+//
+
+#include "Exotica.h"
+
+Exotica::Exotica() : Planta("neutro") {
+    type = 'x';
+
+    agua = 30;
+    nutrientes = 15;
+
+}
+Exotica::~Exotica() {
+    // logica do delete
+}
+
+void Exotica::time() {
+    // implementar depois
+}
+
+void Exotica::multiplica() {
+    // implementar depois
+}
+
+bool Exotica::deveMorrer() {
+    // implementar depois
+    return false;
+}
+
+void Exotica::takeAgua() {
+    // implementar depois
+}
+
+void Exotica::takeNutrientes() {
+    // implementar depois
+}
+
+void Exotica::darAgua() {
+    // implementar depois
+}
+
+void Exotica::darNutrientes() {
+    // implementar depois
+}

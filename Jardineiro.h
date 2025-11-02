@@ -4,17 +4,59 @@
 
 #ifndef TP_JARDINEIRO_H
 #define TP_JARDINEIRO_H
+#include <vector>
 class Ferramenta;
-
+class Celula;
 class Jardineiro {
-public:
-
 private:
-    int linha, coluna;
+    int line, col;
+    bool nojardim;
 
-    bool dentroDoJardim;
+    std::vector<Ferramenta*> ferramentas;
+    Ferramenta* ferramenta;
 
-    Ferramenta* ferramentaNaMao;
+    // contador para usar no limite de açoes por turno
+    int contMovimentos;
+    int contPlantar;
+    int contColheitas;
+    int contEntradas;
+public:
+    Jardineiro();
+    ~Jardineiro();
+
+    void adicionaFerr(Ferramenta* tool);
+    void removeFerr(int serialNum);
+    void setFerr(int serialNum);
+    void apanhaFerr(Celula& cell);
+
+    void resetCont();
+
+    void setPos(); // auxiliar
+
+    void sai();
+    bool entra(int l, int c);
+    bool podeMover();
+    bool podePlantar();
+    bool podeColher();
+    bool podeEntrarSair();
+    bool noJardim();
+
+
+    int getMaxMove();
+    int getMaxEntradas();
+    int getMaxPlantacoes();
+    int getMaxColheitas();
+
+    void decrementMove();
+    void decrementEntradas();
+    void decrementPlantacoes();
+    void decrementColheitas();
+
+    int getLine() const;
+    int getCol() const;
+
+    Ferramenta* getFerrameta();
+    std::vector<Ferramenta*>& getFerramentas();
 };
 
 

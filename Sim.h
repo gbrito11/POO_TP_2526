@@ -30,6 +30,7 @@ public:
     //COmandos ferramentas
     void cmdLarga();
     void cmdCompraFerramenta(char tipo);
+    void cmdPega(int n);
 
     //Moviemtos
     void cmdEsquerda();
@@ -46,6 +47,7 @@ public:
     void cmdLSolo(char l,char c);
     void cmdLSolo(char l, char c, int n);
     void cmdLferr();
+    void cmdInfo();
 
     //Comandos diversos
     void cmdAvanca(int n);

@@ -4,18 +4,50 @@
 
 #ifndef TP_PLANTA_H
 #define TP_PLANTA_H
+#include <string>
 
 
 class Planta {
     public:
-private:
-    int aguaInterna;
-    int nutrientesInternos;
+
+    Planta(std::string beauty);
+    virtual ~Planta();
+
+    char getType();
+    std::string getBeauty();
+
+
+
+    virtual void time() = 0;
+    virtual void multiplica() = 0;
+    virtual bool deveMorrer() = 0;
+
+    virtual void takeAgua() = 0;
+    virtual void takeNutrientes() = 0;
+
+    virtual void darAgua() = 0;
+    virtual void darNutrientes() = 0;
+
+    bool Viva();
+
+    int getAgua();
+    int getNutrientes();
+    int getIdade();
+
+
+
+protected:
+    int agua;
+    int nutrientes;
     int idade;
+    std::string beauty;
+    int timeSemAgua;
+    int timeExtraAgua;
+    int timeSemNutrientes;
     bool viva;
-    char beleza;  // 'b' = bonita, 'f' = feia, 'n' = neutra
-    int tempoSemNutrientes;
-    int tempoAguaExcesso;
+    char type;
+
+
 };
 
 
