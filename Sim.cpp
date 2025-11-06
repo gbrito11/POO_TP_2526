@@ -318,10 +318,10 @@ void Sim::cmdInfo() {
     std::cout << "lsolo <pos> [raio] - Listar solo na posicão\n";
     std::cout << "lferr - Listar ferramentas do jardineiro\n";
     std::cout << "colhe <pos> - Colher planta (ex: colhe fb)\n";
-    std::cout << "planta <pos> <tipo> - Plantar (tipo: c/r/e/x)\n";
+    std::cout << "planta <pos> <tipo> - Plantar (tipo: exotica)\n";
     std::cout << "larga - Largar ferramenta da mão\n";
     std::cout << "pega <num> - Pegar ferramenta por número de série\n";
-    std::cout << "compra <tipo> - Comprar ferramenta (tipo: g/a/t/z)\n";
+    std::cout << "compra <tipo> - Comprar ferramenta (tipo: adubo)\n";
     std::cout << "e/d/c/b - Mover jardineiro (esquerda/direita/cima/baixo)\n";
     std::cout << "entra <pos> - Jardineiro entra no jardim\n";
     std::cout << "sai - Jardineiro sai do jardim\n";
