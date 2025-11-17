@@ -8,10 +8,10 @@
 class Ferramenta;
 class Jardineiro;
 class Planta;
-
+class Settings;
 class Jardim {
 public:
-    Jardim();
+    Jardim(int l, int c);
 
     ~Jardim();
 
@@ -24,7 +24,6 @@ public:
     char LetraColuna(int column);
     char MostraCelula(int x, int y);
     Ferramenta* RandomFerramenta();
-    void cria(int l, int c);
     void mostrar();
     bool criada();
     bool PosValid(int x, int y);

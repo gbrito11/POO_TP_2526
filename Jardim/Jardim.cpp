@@ -7,10 +7,57 @@
 #include "Celula.h"
 #include "../Jardineiro.h"
 #include "../Ferranentas/Ferramenta.h"
+#include "../Ferranentas/Regador.h"
+#include "../Ferranentas/Adubo.h"
+#include "../Ferranentas/Tesoura.h"
+#include "../Ferranentas/FerramentaZ.h"
 #include "../Planta/Planta.h"
+#include "../Settings.h"
+#include <cstdlib>
 
-Jardim::Jardim() : colunas(0), linhas(0), varIsCreated(false), jardineiro(nullptr), celulas(nullptr) {}
+Jardim::Jardim(int c, int l) : jardineiro(nullptr), celulas(nullptr) {
+    colunas = c;
+    linhas= l;
 
+
+    celulas = new Celula*[linhas];
+    for (int i = 0; i < linhas; i++) {
+        celulas[i] = new Celula[colunas];
+
+        for (int j = 0; j < colunas; j++) {
+
+            // Gerar valores com rand() usando os Settings
+            int aguaAleatoria = rand() % (Settings::Jardim::agua_max - Settings::Jardim::agua_min + 1)
+                                + Settings::Jardim::agua_min;
+
+            int nutrientesAleatorios = rand() % (Settings::Jardim::nutrientes_max - Settings::Jardim::nutrientes_min + 1)
+                                       + Settings::Jardim::nutrientes_min;
+
+            celulas[i][j].setAgua(aguaAleatoria);
+            celulas[i][j].setNutrientes(nutrientesAleatorios);
+
+        }
+    }
+
+    //--- 3 FERRAMENTAS ALEATÓRIAS ---
+    for (int k = 0; k < 3; k++) {
+        int x, y;
+        RandomCelula(x, y);
+
+
+        if (celulas[x][y].getFerramenta() == nullptr) {
+            // Se não tiver, coloca uma ferramenta aleatória
+            celulas[x][y].setFerramenta(RandomFerramenta());
+        } else {
+            k--;
+        }
+    }
+    //--------------------------------------------------
+
+    // adicionar logica de colocar 3 ferramentas aleatórias em posições aleatórias
+    varIsCreated = true;
+    mostrar();
+}
 Jardim::~Jardim() {
     if (celulas != nullptr) {
         for (int i = 0; i < linhas; i++) {
@@ -23,20 +70,9 @@ Jardim::~Jardim() {
         delete jardineiro;
     }
 }
-void Jardim::cria(int c, int l) {
-    linhas = c;
-    colunas= l;
 
-    celulas = new Celula*[linhas];
-    for (int i = 0; i < linhas; i++) {
-        celulas[i] = new Celula[colunas];
-    }
-    // adicionar logica de colocar 3 ferramentas aleatórias em posições aleatórias
-    varIsCreated = true;
-    mostrar();
-}
 
-void Jardim::mostrar() {
+   void Jardim::mostrar() {
 
     std::cout << "\n ";
 
@@ -82,6 +118,15 @@ char Jardim::MostraCelula(int l, int c) {
 
 
 void Jardim::addPlanta(Planta* p, int x, int y) {
+    if (!varIsCreated || celulas == nullptr) {
+        std::cerr << "addPlanta: garden not created\n";
+        return;
+    }
+    if (x < 0 || x >= linhas || y < 0 || y >= colunas) {
+        std::cerr << "addPlanta: invalid position (" << x << "," << y << ")\n";
+        return;
+    }
+
     celulas[x][y].setPlanta(p);
     mostrar();
 }
@@ -110,7 +155,8 @@ char Jardim::LetraColuna(int c) {
 }
 
 void Jardim::RandomCelula(int& x, int& y) {
-    // implementar depois
+    x = rand() % linhas;
+    y = rand() % colunas;
 }
 
 void Jardim::limpaCelulas() {
@@ -118,7 +164,14 @@ void Jardim::limpaCelulas() {
 }
 
 Ferramenta* Jardim::RandomFerramenta() {
-    // implementar depois
+    int tipo = rand() % 4; // 0, 1,2,32
+    switch (tipo) {
+        case 0: return new Regador();
+        case 1: return new Adubo();
+        case 2: return new Tesoura();
+        case 3: return new Dreno();
+        default: return nullptr;
+    }
     return nullptr;
 }
 

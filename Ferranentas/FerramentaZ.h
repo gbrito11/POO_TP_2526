@@ -8,6 +8,7 @@
 
 
 class Dreno : public Ferramenta {
+    public:
     Dreno();
     ~Dreno() override;
 

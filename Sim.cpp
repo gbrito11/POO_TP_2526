@@ -23,6 +23,7 @@ void Sim::run() {
         std::cout << "> ";
         std::getline(std::cin, linha);
         processarComando(linha);
+
     }
 }
 
@@ -235,10 +236,9 @@ void Sim::processarComando(const std::string& linha) {
 
 void Sim::cmdJardim(int l,int c) {
     delete jardim;
-    jardim = new Jardim();
-    jardim->cria(c,l);
+    jardim = new Jardim(c,l);
     std::cout << "Jardim criado com " << l << "x" << c << " posições.\n";
-    jardim->mostrar();
+
 }
 
 

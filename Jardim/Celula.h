@@ -29,8 +29,8 @@ public:
 private:
     int agua = 0;
     int nutrientes = 0;
-    Planta* planta;
-    Ferramenta* ferramenta;
+    Planta* planta = nullptr;
+    Ferramenta* ferramenta = nullptr;
     char type = ' ';
 
 };

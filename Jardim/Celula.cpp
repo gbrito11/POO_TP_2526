@@ -14,7 +14,7 @@ char Celula::mostrar() const {
 
 
 
-Celula::Celula() : agua(0), nutrientes(0), planta(nullptr), ferramenta(nullptr),type(' ') {
+Celula::Celula() : agua(0), nutrientes(0), planta(nullptr), ferramenta(nullptr), type(' ') {
     // IMPORTANTE: Inicializar todos os ponteiros a nullptr para evitar segmentation errors
 }
 
@@ -55,14 +55,14 @@ void Celula::setNutrientes(int n) {
 }
 
 void Celula::setPlanta(Planta* p) {
+    delete this->planta;
     this->planta = p;
     std::cout << "Planta colocada: " << p->getType() << std::endl;
 }
-
 void Celula::setFerramenta(Ferramenta* t) {
-    // apagar a cena anterior para evitar memory leaks
     if (this->ferramenta != nullptr && this->ferramenta != t) {
         delete this->ferramenta;
     }
+
     this->ferramenta = t;
 }
