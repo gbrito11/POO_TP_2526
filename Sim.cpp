@@ -8,7 +8,9 @@
 #include "Jardineiro.h"
 #include "Planta/Exotica.h"
 
-Sim::Sim() : jardim(), jardineiro(),emExecucao(true){}
+Sim::Sim() : jardim(), jardineiro(),emExecucao(true) {
+
+}
 
 Sim::~Sim() {
     delete jardim;
@@ -31,9 +33,12 @@ void Sim::processarComando(const std::string& linha) {
     std::stringstream ss(linha);
     std::string cmd;
     ss >> cmd;
+    if (jardim != nullptr) {
+        std::cout << "Erro: O jardim ja foi criado.\n";
+    }
 
     //comandos do jardim
-    if (cmd == "jardim") {
+    if (cmd == "jardim" ) {
         int linhas, colunas;
         if (ss >> linhas >> colunas)
             if(linhas > 0 && colunas > 0 && linhas < 27 && colunas < 27) cmdJardim(linhas, colunas);
