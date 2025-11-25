@@ -13,11 +13,17 @@
 #include "../Ferranentas/FerramentaZ.h"
 #include "../Planta/Planta.h"
 #include "../Settings.h"
+#include "../Planta/Roseira.h"
+#include "../Planta/Cacto.h"
+#include "../Planta/ErvaDaninha.h"
+#include "../Planta/Exotica.h"
 #include <cstdlib>
+
 
 Jardim::Jardim(int c, int l) : jardineiro(nullptr), celulas(nullptr) {
     colunas = c;
     linhas= l;
+    jardineiro = new Jardineiro();
 
 
     celulas = new Celula*[linhas];
@@ -116,20 +122,50 @@ char Jardim::MostraCelula(int l, int c) {
     return '.';  // Posição vazia
 }
 
-
-void Jardim::addPlanta(Planta* p, int x, int y) {
-    if (!varIsCreated || celulas == nullptr) {
-        std::cerr << "addPlanta: garden not created\n";
+////////////////////////////////////////
+///  Plantas
+///
+void Jardim::addPlanta(int x, int y,std::string tipo) {
+    // 1. O Guarda-Portão PEDE PERMISSÃO
+    if (!jardineiro->podePlantar()) {
+        std::cout << "O Jardineiro ja plantou o maximo ("
+                  << jardineiro->getMaxPlantacoes() << ") por turno.\n";
         return;
     }
-    if (x < 0 || x >= linhas || y < 0 || y >= colunas) {
-        std::cerr << "addPlanta: invalid position (" << x << "," << y << ")\n";
+
+    // 2. O Guarda-Portão VALIDA A POSIÇÃO
+    if (!PosValid(x, y)) {
+        std::cout << "Erro: Posicao (" << x << "," << y << ") invalida.\n";
         return;
     }
 
+    if (celulas[x][y].getPlanta() != nullptr) {
+        std::cout << "Erro: Ja existe uma planta nessa posicao.\n";
+        return;
+    }
+
+    // 4. LÓGICA DE CRIAÇÃO (O que estava em Sim.cpp)
+    Planta* p = nullptr;
+    if (tipo == "r" || tipo == "roseira") {
+        p = new Roseira();
+    } else if (tipo == "c" || tipo == "cacto") {
+        p = new Cacto();
+    } else if (tipo == "e" || tipo == "erva") {
+        p = new ErvaDaninha();
+    } else if (tipo == "x" || tipo == "exotica") {
+        p = new Exotica();
+    } else {
+        std::cout << "Erro: Tipo de planta '" << tipo << "' desconhecido.\n";
+        return; // Não faz nada se o tipo for inválido
+    }
+
+    // 5. O Guarda-Portão DÁ AS ORDENS
     celulas[x][y].setPlanta(p);
+    jardineiro->incrementaPlantacoes(); // <-- Faz a incrementação aqui!
     mostrar();
 }
+
+
 
 void Jardim::addFerramenta(Ferramenta* f, int x, int y) {
     // implementar depois
@@ -178,8 +214,7 @@ Ferramenta* Jardim::RandomFerramenta() {
 
 
 bool Jardim::PosValid(int x, int y) {
-    // implementar depois
-    return false;
+    return (x >= 0 && x < linhas && y >= 0 && y < colunas);
 }
 
 Celula& Jardim::getCelula(int x, int y) {
@@ -192,4 +227,194 @@ int Jardim::LetraNum(char letra) {
 }
 
 
+///////////////////////////////
+///------------------------- JARDINEIRO
+/////////////////////////
+bool Jardim::entra(int l,int c) {
+    // 2. O Jardim verifica a permissão
+    if (!this->jardineiro->podeEntrarSair()) {
+        std::cout << "O Jardineiro ja nao pode entrar/sair neste turno.\n";
+        return false;
+    }
 
+    if (PosValid(l, c)) {
+        jardineiro->setPos(l, c);
+        jardineiro->incrementarEntradas();
+        this->jardineiro->setNoJardim(true);
+
+        // --- LÓGICA DE APANHAR FERRAMENTA (CONTROLADA PELO JARDIM) ---
+        if (celulas[l][c].getFerramenta() != nullptr) {
+
+            // 1. O JARDIM tira a ferramenta da célula (sem destruir)
+            Ferramenta* f = celulas[l][c].largarFerramenta();
+
+            // 2. O JARDIM entrega ao jardineiro
+            jardineiro->receberFerramenta(f);
+
+            std::cout << "O jardineiro encontrou uma ferramenta: " << f->getType() << "\n";
+
+            // 3. O JARDIM faz a magia
+            gerarNovaFerramenta();
+        }
+        // -----------------------------------------------------------
+    }
+
+    std::cout << "Jardineiro entrou no jardim.\n";
+    return true;
+}
+
+void Jardim::gerarNovaFerramenta() {
+    int x, y;
+    int tentativas = 0;
+    do {
+        RandomCelula(x, y);
+        tentativas++;
+    } while (celulas[x][y].getFerramenta() != nullptr && tentativas < 1000);
+
+    if (celulas[x][y].getFerramenta() == nullptr) {
+        celulas[x][y].setFerramenta(RandomFerramenta());
+        std::cout << "Magia! Uma nova ferramenta apareceu.\n";
+    }
+}
+
+// Em Jardim.cpp
+
+bool Jardim::moverJardineiro(int direcao) {
+    // 1. Verificações Iniciais
+    if (jardineiro == nullptr || !jardineiro->noJardim()) {
+        std::cout << "Jardineiro nao esta no jardim.\n";
+        return false;
+    }
+
+    if (!jardineiro->podeMover()) {
+        std::cout << "Jardineiro esta cansado, ja se moveu "
+                  << jardineiro->getMaxMove() << " vezes.\n";
+        return false;
+    }
+
+    // 2. Calcular nova posição baseada no switch
+    int l = jardineiro->getLine();
+    int c = jardineiro->getCol();
+
+    switch (direcao) {
+        case 0: l--; break; // Cima (diminui linha)
+        case 1: l++; break; // Baixo (aumenta linha)
+        case 2: c++; break; // Direita (aumenta coluna)
+        case 3: c--; break; // Esquerda (diminui coluna)
+        default:
+            std::cout << "Direcao invalida.\n";
+            return false;
+    }
+
+    // 3. Validar e Executar
+    if (PosValid(l, c)) {
+        // Mover o jardineiro
+        jardineiro->setPos(l, c);
+        jardineiro->incrementaMovimentos();
+
+        // --- APANHAR FERRAMENTA
+        if (celulas[l][c].getFerramenta() != nullptr) {
+            Ferramenta* f = celulas[l][c].largarFerramenta();
+            jardineiro->receberFerramenta(f);
+            std::cout << "O jardineiro encontrou uma ferramenta: " << f->getType() << "\n";
+
+
+            int nx, ny;
+            do {
+                RandomCelula(nx, ny);
+            } while (celulas[nx][ny].getFerramenta() != nullptr); // Procura vazia
+            celulas[nx][ny].setFerramenta(RandomFerramenta());
+            std::cout << "Magia! Uma nova ferramenta apareceu.\n";
+        }
+        // --------------------------
+
+        mostrar(); // Atualizar o ecrã
+        return true;
+    } else {
+        std::cout << "Nao pode mover-se para fora do jardim.\n";
+        return false;
+    }
+}
+
+
+void setJardineiro(Jardineiro* j, int l, int c) {
+
+}
+
+/////////////////////////////77
+/// Tempo
+///////////////////////////
+
+void Jardim::avanca(int n) {
+    // Arrays auxiliares para ver os vizinhos (Cima, Baixo, Esq, Dir)
+    int dx[] = {-1, 1, 0, 0};
+    int dy[] = {0, 0, -1, 1};
+
+    for (int k = 0; k < n; k++) {
+        // Opcional: Mostrar em que instante estamos
+        // std::cout << "--- Instante " << (k + 1) << " ---\n";
+
+        for (int i = 0; i < linhas; i++) {
+            for (int j = 0; j < colunas; j++) {
+
+                // Obtém a planta (se existir)
+                Planta* p = celulas[i][j].getPlanta();
+
+                if (p != nullptr) {
+
+                    // 1. PRIMEIRO: A planta vive o turno
+                    // (Aqui é que os contadores 'timeExtraAgua' aumentam!)
+                    p->processaTempo(celulas[i][j]);
+
+                    // 2. SEGUNDO: Verifica se deve morrer AGORA
+                    if (p->deveMorrer()) {
+                        std::cout << "Planta " << p->getType() << " morreu na posicao "
+                                  << LetraLinha(i) << LetraColuna(j) << ".\n";
+
+                        // Deixa os nutrientes no solo
+                        p->efeitoMorte(celulas[i][j]);
+
+                        // Remove-a fisicamente da memória e da célula
+                        celulas[i][j].removePlanta();
+
+                        // Se morreu, não faz mais nada com ela neste turno
+                        continue;
+                    }
+
+                    // 3. TERCEIRO: Se sobreviveu, tenta multiplicar
+                    if (p->querMultiplicar()) {
+
+                        // Lógica da Erva Daninha (Mata vizinhos)
+                        if (p->getType() == 'e') {
+                             for (int v = 0; v < 4; v++) {
+                                int ni = i + dx[v];
+                                int nj = j + dy[v];
+                                if (PosValid(ni, nj)) {
+                                    // Mata quem lá estiver
+                                    if (celulas[ni][nj].getPlanta() != nullptr) {
+                                        celulas[ni][nj].removePlanta();
+                                    }
+                                    celulas[ni][nj].setPlanta(p->reproduz());
+                                    break;
+                                }
+                             }
+                        }
+                        // Lógica das outras (Só em vazio)
+                        else {
+                            for (int v = 0; v < 4; v++) {
+                                int ni = i + dx[v];
+                                int nj = j + dy[v];
+                                if (PosValid(ni, nj) && celulas[ni][nj].getPlanta() == nullptr) {
+                                    celulas[ni][nj].setPlanta(p->reproduz());
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    // Só mostra o jardim no fim de todos os instantes
+    mostrar();
+}

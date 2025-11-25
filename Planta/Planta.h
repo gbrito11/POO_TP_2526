@@ -6,6 +6,8 @@
 #define TP_PLANTA_H
 #include <string>
 
+class Celula;
+class Settings;
 
 class Planta {
     public:
@@ -18,8 +20,9 @@ class Planta {
 
 
 
-    virtual void time() = 0;
-    virtual void multiplica() = 0;
+    virtual void processaTempo(Celula& celula) = 0;
+    virtual void efeitoMorte(Celula& celula) = 0;
+    virtual void multiplica(Celula& celula);
     virtual bool deveMorrer() = 0;
 
     virtual void takeAgua() = 0;

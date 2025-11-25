@@ -8,9 +8,7 @@
 #include "Jardineiro.h"
 #include "Planta/Exotica.h"
 
-Sim::Sim() : jardim(), jardineiro(),emExecucao(true) {
-
-}
+Sim::Sim() : jardim(), jardineiro(),emExecucao(true) {}
 
 Sim::~Sim() {
     delete jardim;
@@ -33,12 +31,13 @@ void Sim::processarComando(const std::string& linha) {
     std::stringstream ss(linha);
     std::string cmd;
     ss >> cmd;
-    if (jardim != nullptr) {
-        std::cout << "Erro: O jardim ja foi criado.\n";
-    }
 
     //comandos do jardim
     if (cmd == "jardim" ) {
+        if (jardim != nullptr) {
+            std::cout << "Erro: O jardim ja foi criado.\n";
+            return;
+        }
         int linhas, colunas;
         if (ss >> linhas >> colunas)
             if(linhas > 0 && colunas > 0 && linhas < 27 && colunas < 27) cmdJardim(linhas, colunas);
@@ -56,7 +55,7 @@ void Sim::processarComando(const std::string& linha) {
 
         if (ss >> pos >> tipo) {
             if (pos.size() != 2) {
-                std::cout << "Uso: planta <posição> <tipo> (ex: planta FB F)\n";
+                std::cout << "Uso: planta <posição> <tipo> (ex: planta FB x)\n";
             }
             else {
                 char linha = pos[0];
@@ -130,7 +129,7 @@ void Sim::processarComando(const std::string& linha) {
         std::string pos;
         if (ss >> pos ) {
             if (pos.size() != 2) {
-                std::cout << "Uso: Entra <posição> (ex: planta FB )\n";
+                std::cout << "Uso: Entra <posição> (ex:  FB )\n";
             }
             else {
                 char linha = pos[0];
@@ -240,7 +239,6 @@ void Sim::processarComando(const std::string& linha) {
 }
 
 void Sim::cmdJardim(int l,int c) {
-    delete jardim;
     jardim = new Jardim(c,l);
     std::cout << "Jardim criado com " << l << "x" << c << " posições.\n";
 
@@ -248,22 +246,32 @@ void Sim::cmdJardim(int l,int c) {
 
 
 // PLantas---------------------------------------
-void Sim::cmdPlanta( char l, char c , std::string tipo) {
+void Sim::cmdPlanta( char l, char c ,std::string tipo) {
     if (!jardim) {
         std::cout << "Erro: ainda não existe um jardim.\n";
         return;
     }
     int col = jardim->LetraNum(c);
     int lin = jardim->LetraNum(l);
-    if (tipo =="exotica" ){
+    if (tipo =="x" ){
         std::cout << " -> Criar Planta Exótica\n";
-        Planta* p = new Exotica();
-        jardim->addPlanta(p,lin,col);
+        jardim->addPlanta(lin,col,tipo);
+        jardim->mostrar();
+    }else if (tipo == "r") {
+        std::cout << " -> Criar Planta roseira\n";
+        jardim->addPlanta(lin,col,tipo);
+        jardim->mostrar();
+    }else if (tipo == "c") {
+        std::cout << " -> Criar Planta cacto\n";
+        jardim->addPlanta(lin,col,tipo);
+        jardim->mostrar();
+    }else if (tipo == "e") {
+        std::cout << " -> Criar Planta ervadaninha\n";
+        jardim->addPlanta(lin,col,tipo);
         jardim->mostrar();
     }
 
     std::cout << "Plantar tipo '" << tipo << "' na posição : <" << l <<"> <"<< c << ">" ".\n";
-
 }
 
 void Sim::cmdColhe(char l, char c) {
@@ -288,24 +296,27 @@ void Sim::cmdPega(int n) {
 //MOvimentso do jardineiro-----------------------------
 void Sim::cmdEsquerda() {
     std::cout<<"Jardineiro andou para a esquerda\n";
-    //esquerda
+    jardim->moverJardineiro(3);
 }
 void Sim::cmdDireita() {
     std::cout<<"Jardineiro andou para a direita\n";
-    //direita
+    jardim->moverJardineiro(2);
 }
 void Sim::cmdCima() {
     std::cout<<"Jardineiro andou para cima\n";
-    //cima
+    jardim->moverJardineiro(0);
 }
 void Sim::cmdBaixo() {
     std::cout<<"Jardineiro andou para baixo\n";
-    //baixo
+    jardim->moverJardineiro(1);
 }
 
 void Sim::cmdEntra(char l,char c) {
     std::cout<<"Jardineiro vai entrar na posição <"<<l<<"> <"<< c<<">" << std::endl;
-    //implementar o jardineiro a esntrar
+    int x= jardim->LetraNum(l);
+    int y= jardim->LetraNum(c);
+    jardim->entra(x,y);
+    jardim->mostrar();
 }
 
 void Sim::cmdSai() {
@@ -366,7 +377,7 @@ void Sim::cmdLferr() {
 //COmados especificos-------------------------------------------
 void Sim::cmdAvanca(int n) {
     std::cout << "Avançar " << n << " instantes.\n";
-    // chama para avancar o tempo
+    jardim->avanca(n);
 }
 
 void Sim::cmdFim() {

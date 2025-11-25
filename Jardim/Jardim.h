@@ -4,6 +4,7 @@
 #define TP_JARDIM_H
 
 #include "Celula.h"
+#include <string>
 
 class Ferramenta;
 class Jardineiro;
@@ -15,21 +16,26 @@ public:
 
     ~Jardim();
 
+    bool entra(int l,int c);  //feito
+    bool moverJardineiro(int i);
+    void addPlanta(int l, int c,std::string tipo); //feito
+    void gerarNovaFerramenta();
 
-    void addPlanta(Planta* p, int l, int c);
-    void addFerramenta(Ferramenta* f, int l, int c);
-    void RandomCelula(int& x, int& y);
+    void avanca(int n);
+
+    void addFerramenta(Ferramenta* f, int l, int c); //feito
+    void RandomCelula(int& x, int& y); //feito
     void limpaCelulas();
     char LetraLinha(int line);
     char LetraColuna(int column);
     char MostraCelula(int x, int y);
-    Ferramenta* RandomFerramenta();
-    void mostrar();
+    Ferramenta* RandomFerramenta(); //feito
+    void mostrar(); //feito
     bool criada();
-    bool PosValid(int x, int y);
-    int getLinhas();
-    int getColunas();
-    int LetraNum(char l);
+    bool PosValid(int x, int y); //feito
+    int getLinhas(); //feito
+    int getColunas(); //feito
+    int LetraNum(char l);//feito
 
     Celula& getCelula(int x, int y);
 

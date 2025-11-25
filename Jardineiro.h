@@ -27,19 +27,18 @@ public:
     void adicionaFerr(Ferramenta* tool);
     void removeFerr(int serialNum);
     void setFerr(int serialNum);
-    void apanhaFerr(Celula& cell);
+    void receberFerramenta(Ferramenta* f);
 
     void resetCont();
 
-    void setPos(); // auxiliar
+    bool setPos(int l, int c); // auxiliar
 
-    void sai();
-    bool entra(int l, int c);
-    bool podeMover();
-    bool podePlantar();
-    bool podeColher();
-    bool podeEntrarSair();
-    bool noJardim();
+    bool podeMover();//feito
+    bool podePlantar();//feito
+    bool podeColher();//feito
+    bool podeEntrarSair();//feito
+    bool noJardim();//feito
+    void setNoJardim(bool estado); //feito
 
 
     int getMaxMove();
@@ -51,6 +50,11 @@ public:
     void decrementEntradas();
     void decrementPlantacoes();
     void decrementColheitas();
+
+    void incrementaPlantacoes();
+    void incrementarEntradas(); //feito
+    void incrementaColheitas();
+    void incrementaMovimentos(); //feito
 
     int getLine() const;
     int getCol() const;

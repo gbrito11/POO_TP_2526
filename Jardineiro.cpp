@@ -6,11 +6,15 @@
 
 #include "Jardineiro.h"
 
+#include <iostream>
+
 #include "Settings.h"
 #include "Ferranentas/Ferramenta.h"
 
 
-Jardineiro::Jardineiro() : line(0), col(0), nojardim(false), ferramenta(nullptr) {
+Jardineiro::Jardineiro()
+: line(0), col(0), nojardim(false), ferramenta(nullptr), contMovimentos(0),contColheitas(0)
+, contPlantar(0), contEntradas(0){
 
 }
 
@@ -51,65 +55,79 @@ void Jardineiro::setFerr(int serialNum) {
     // implementar depois
 }
 
-void Jardineiro::apanhaFerr(Celula& cell) {
-    // implementar depois
-}
-
 void Jardineiro::resetCont() {
-    // implementar depois
+    contMovimentos = 0;
+    contPlantar = 0;
+    contColheitas = 0;
+    contEntradas = 0;
 }
 
-void Jardineiro::setPos() {
-    // implementar depois
-}
-
-void Jardineiro::sai() {
-    // implementar depois
-}
-
-bool Jardineiro::entra(int line, int col) {
-    // implementar depois
+bool Jardineiro::setPos(int l, int c) {
+    if (podeMover()) {
+        this->line = l;
+        this->col = c;
+        contMovimentos++;
+        return true;
+    }
     return false;
+
 }
+
+
+
+
 
 bool Jardineiro::podeMover() {
-    // implementar depois
-    return false;
+    return contMovimentos < Settings::Jardineiro::max_movimentos;
 }
 
 bool Jardineiro::podePlantar() {
-    // implementar depois
-    return false;
+    return contPlantar < Settings::Jardineiro::max_plantacoes;
 }
 
 bool Jardineiro::podeColher() {
-    // implementar depois
-    return false;
+    return contColheitas < Settings::Jardineiro::max_colheitas;
 }
 
 bool Jardineiro::podeEntrarSair() {
-    // implementar depois
-    return false;
+    return contEntradas < Settings::Jardineiro::max_entradas_saidas;
 }
 
 bool Jardineiro::noJardim() {
     return nojardim;
 }
 
+
+void Jardineiro::setNoJardim(bool estado) {
+    this->nojardim = estado;
+}
+
+
+
 void Jardineiro::decrementMove() {
-    // implementar depois
+    contMovimentos--;
 }
 
 void Jardineiro::decrementEntradas() {
-    // implementar depois
+    contEntradas--;
 }
 
 void Jardineiro::decrementPlantacoes() {
-    // implementar depois
+    contPlantar--;
 }
 
 void Jardineiro::decrementColheitas() {
-    // implementar depois
+    contColheitas--;
+}
+
+
+
+void Jardineiro::incrementaPlantacoes() {
+    contPlantar++;
+}
+
+void Jardineiro::incrementarEntradas() {
+    contEntradas++;
 }
 
 int Jardineiro::getLine() const {
@@ -126,4 +144,15 @@ Ferramenta* Jardineiro::getFerrameta() {
 
 std::vector<Ferramenta*>& Jardineiro::getFerramentas() {
     return ferramentas;
+}
+
+void Jardineiro::receberFerramenta(Ferramenta* f) {
+    if (f != nullptr) {
+        this->ferramentas.push_back(f);
+        std::cout << "Jardineiro tem uma nova ferramenta"  "\n";
+    }
+}
+
+void Jardineiro::incrementaMovimentos() {
+    contMovimentos++;
 }

@@ -16,15 +16,18 @@ public:
     char mostrar() const;
     char getCharVisivel(const Jardineiro* jardineiro) const;
 
-    int getAgua();
-    int getNutrientes();
-    Planta* getPlanta();
-    Ferramenta* getFerramenta();
+    int getAgua(); //
+    int getNutrientes(); //
+    Planta* getPlanta(); //
+    Ferramenta* getFerramenta(); //
 
     void setAgua(int agua);
     void setNutrientes(int nutrientes);
     void setPlanta(Planta* planta);
+    void removePlanta();
     void setFerramenta(Ferramenta* ferramenta);
+
+    Ferramenta* largarFerramenta();
 
 private:
     int agua = 0;

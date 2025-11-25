@@ -66,3 +66,17 @@ void Celula::setFerramenta(Ferramenta* t) {
 
     this->ferramenta = t;
 }
+
+Ferramenta* Celula::largarFerramenta() {
+    Ferramenta* f = this->ferramenta;
+    this->ferramenta = nullptr;
+    return f;
+}
+
+void Celula::removePlanta() {
+    if (this->planta != nullptr) {
+        delete this->planta;    // 1. Liberta a memória (chama o destrutor da Planta)
+        this->planta = nullptr; // 2. Marca o ponteiro como "vazio"
+    }
+}
+

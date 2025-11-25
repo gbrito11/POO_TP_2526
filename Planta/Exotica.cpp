@@ -15,12 +15,16 @@ Exotica::~Exotica() {
     // logica do delete
 }
 
-void Exotica::time() {
-    // implementar depois
+void Exotica::processaTempo(Celula& celula) {
+    // O teu código aqui...
 }
 
-void Exotica::multiplica() {
-    // implementar depois
+void Exotica::efeitoMorte(Celula& celula) {
+    // O teu código aqui...
+}
+
+void Exotica::multiplica(Celula& celula) { // <-- O ERRO PROVAVELMENTE É ESTA
+    // Se ainda não tens lógica, deixa o corpo vazio, mas a função TEM DE EXISTIR
 }
 
 bool Exotica::deveMorrer() {

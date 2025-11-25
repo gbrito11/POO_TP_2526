@@ -15,12 +15,16 @@ Roseira::~Roseira() {
     // logica do delete
 }
 
-void Roseira::time() {
-    // implementar depois
+void Roseira::processaTempo(Celula& celula) {
+    // O teu código aqui...
 }
 
-void Roseira::multiplica() {
-    // implementar depois
+void Roseira::efeitoMorte(Celula& celula) {
+    // O teu código aqui...
+}
+
+void Roseira::multiplica(Celula& celula) { // <-- O ERRO PROVAVELMENTE É ESTA
+    // Se ainda não tens lógica, deixa o corpo vazio, mas a função TEM DE EXISTIR
 }
 
 bool Roseira::deveMorrer() {

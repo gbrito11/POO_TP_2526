@@ -25,6 +25,7 @@ public:
     virtual std::string Info() = 0;  // info para comando lferr
 
 
+
     int getSerialNum();
 
     char getType();

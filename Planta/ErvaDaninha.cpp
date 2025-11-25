@@ -18,12 +18,16 @@ ErvaDaninha::~ErvaDaninha() {
     // logica do delete
 }
 
-void ErvaDaninha::time() {
-    // implementar depois
+void ErvaDaninha::processaTempo(Celula& celula) {
+    // O teu código aqui...
 }
 
-void ErvaDaninha::multiplica() {
-    // implementar depois
+void ErvaDaninha::efeitoMorte(Celula& celula) {
+    // O teu código aqui...
+}
+
+void ErvaDaninha::multiplica(Celula& celula) { // <-- O ERRO PROVAVELMENTE É ESTA
+    // Se ainda não tens lógica, deixa o corpo vazio, mas a função TEM DE EXISTIR
 }
 
 bool ErvaDaninha::deveMorrer() {

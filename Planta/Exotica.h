@@ -11,8 +11,9 @@ public:
     Exotica();
     ~Exotica() override;
 
-    void time() override;
-    void multiplica() override;
+    void processaTempo(Celula& celula) override;
+    void multiplica(Celula& celula) override;
+    void efeitoMorte(Celula& celula) override;
     bool deveMorrer() override;
 
     void takeAgua() override;
