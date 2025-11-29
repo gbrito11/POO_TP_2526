@@ -13,7 +13,8 @@ public:
 
 
     void processaTempo(Celula &celula) override;
-    void multiplica(Celula& celula) override;
+    bool querMultiplicar() override;
+    Planta* reproduz() override;
     void efeitoMorte(Celula& celula) override;
     bool deveMorrer() override;
 

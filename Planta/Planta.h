@@ -22,7 +22,10 @@ class Planta {
 
     virtual void processaTempo(Celula& celula) = 0;
     virtual void efeitoMorte(Celula& celula) = 0;
-    virtual void multiplica(Celula& celula);
+    virtual bool querMultiplicar() = 0;
+
+    virtual Planta* reproduz() = 0;
+
     virtual bool deveMorrer() = 0;
 
     virtual void takeAgua() = 0;

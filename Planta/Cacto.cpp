@@ -44,14 +44,14 @@ void Cacto::processaTempo(Celula& celula){
     if (celula.getAgua() > Settings::Cacto::morre_agua_solo_maior) {
         this->timeExtraAgua++;
     } else {
-        this->timeExtraAgua = 0; // Reset se estiver normal
+        this->timeExtraAgua = 0;
     }
 
     // Nutrientes a menos? (== 0)
     if (celula.getNutrientes() <= Settings::Cacto::morre_nutrientes_solo_menor) { // <= 0 ou 1
         this->timeSemNutrientes++;
     } else {
-        this->timeSemNutrientes = 0; // Reset se estiver normal
+        this->timeSemNutrientes = 0;
     }
 
     std::cout<<"cacto modificado!!";
@@ -74,24 +74,52 @@ void Cacto::efeitoMorte(Celula& celula) {
     // (A água perde-se, segundo o enunciado)
 }
 
-// 4. MULTIPLICAÇÃO (Implementaremos depois no Jardim)
-void Cacto::multiplica(Celula& celula) {
-    // Lógica futura
+bool Cacto::querMultiplicar() {
+
+    return (this->nutrientes > Settings::Cacto::multiplica_nutrientes_maior &&
+            this->agua > Settings::Cacto::multiplica_agua_maior);
 }
 
+Planta* Cacto::reproduz() {
+    Cacto* filho = new Cacto();
 
-void Cacto::takeAgua() {
-    // implementar depois
-}
+    // Regra: "Divididos em iguais partes"
+    int metadeAgua = this->agua / 2;
+    int metadeNutri = this->nutrientes / 2;
 
-void Cacto::takeNutrientes() {
-    // implementar depois
+    // 1. O Filho recebe metade
+    filho->agua = metadeAgua;
+    filho->nutrientes = metadeNutri;
+
+    // 2. O Pai fica com a outra metade (perde o que deu)
+    this->agua -= metadeAgua;
+    this->nutrientes -= metadeNutri;
+
+    return filho;
 }
 
 void Cacto::darAgua() {
-    // implementar depois
+    // Aumenta a água da planta com a dose definida nos Settings
+    this->agua += Settings::Regador::dose;
+
+    // Opcional: Limitar ao máximo se quiseres
+    // if (this->agua > 100) this->agua = 100;
 }
 
+// O Adubo chama isto
 void Cacto::darNutrientes() {
-    // implementar depois
+    this->nutrientes += Settings::Adubo::dose;
+}
+
+// O Dreno chama isto
+void Cacto::takeAgua() {
+    // Retira água (usa a mesma dose ou um valor fixo)
+    this->agua -= Settings::Regador::dose;
+    if (this->agua < 0) this->agua = 0;
+}
+
+// Outra ferramenta chama isto
+void Cacto::takeNutrientes() {
+    this->nutrientes -= Settings::Adubo::dose;
+    if (this->nutrientes < 0) this->nutrientes = 0;
 }

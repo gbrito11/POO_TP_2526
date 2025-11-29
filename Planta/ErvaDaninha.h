@@ -10,16 +10,18 @@
 class ErvaDaninha : public Planta {
 
 protected:
-    int timeNascimento;
+
+    int instantesSemReproduzir;
 
 public:
     ErvaDaninha();
     ~ErvaDaninha() override;
 
     void processaTempo(Celula& celula) override;
-    void multiplica(Celula& celula) override;
     void efeitoMorte(Celula& celula) override;
     bool deveMorrer() override;
+    bool querMultiplicar() override;
+    Planta* reproduz() override;
 
     void takeAgua() override;
     void takeNutrientes() override;
