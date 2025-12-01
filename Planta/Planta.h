@@ -19,7 +19,7 @@ class Planta {
     std::string getBeauty();
 
 
-
+    virtual int getChuva() { return 0; }
     virtual void processaTempo(Celula& celula) = 0;
     virtual void efeitoMorte(Celula& celula) = 0;
     virtual bool querMultiplicar() = 0;

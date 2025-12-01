@@ -363,6 +363,9 @@ void Sim::cmdLArea() {
 void Sim::cmdLSolo(char l, char c) {
     // código para 1 célula
     std::cout<<"Informacao do solo";
+    int lin=jardim->LetraNum(l);
+    int col=jardim->LetraNum(c);
+    jardim->inspectSolo(lin,col);
 }
 
 void Sim::cmdLSolo(char l, char c, int n) {

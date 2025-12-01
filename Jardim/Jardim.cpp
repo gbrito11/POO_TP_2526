@@ -23,6 +23,7 @@
 Jardim::Jardim(int c, int l) : jardineiro(nullptr), celulas(nullptr) {
     colunas = c;
     linhas= l;
+    instantes=1;
     jardineiro = new Jardineiro();
 
 
@@ -277,7 +278,6 @@ void Jardim::gerarNovaFerramenta() {
     }
 }
 
-// Em Jardim.cpp
 
 bool Jardim::moverJardineiro(int direcao) {
     // 1. Verificações Iniciais
@@ -352,7 +352,8 @@ void Jardim::avanca(int n) {
 
     for (int k = 0; k < n; k++) {
         // Opcional: Mostrar em que instante estamos
-        // std::cout << "--- Instante " << (k + 1) << " ---\n";
+        std::cout << "--- Instante " << (instantes) << " ---\n";
+        instantes++;
 
         for (int i = 0; i < linhas; i++) {
             for (int j = 0; j < colunas; j++) {
@@ -361,6 +362,24 @@ void Jardim::avanca(int n) {
                 Planta* p = celulas[i][j].getPlanta();
 
                 if (p != nullptr) {
+
+                    int chuva = p->getChuva(); // Para a planta exotica, faz chuver 20 em cada solo
+
+                    if (chuva > 0 && instantes % 5 == 0) {
+                        std::cout << "A Exotica fez chover " << chuva << " de agua em todo o jardim!\n";
+
+                        // O Jardim percorre a grelha TODA para dar água
+                        for (int r = 0; r < linhas; r++) {
+                            for (int c = 0; c < colunas; c++) {
+                                int aguaAtual = celulas[r][c].getAgua();
+                                // Limita ao máximo de 100 se quiseres, ou deixa subir infinito
+                                int novaAgua = aguaAtual + chuva;
+                                if (novaAgua > Settings::Jardim::agua_max) novaAgua = Settings::Jardim::agua_max;
+
+                                celulas[r][c].setAgua(novaAgua);
+                            }
+                        }
+                    }
 
                     // 1. PRIMEIRO: A planta vive o turno
                     // (Aqui é que os contadores 'timeExtraAgua' aumentam!)
@@ -415,6 +434,75 @@ void Jardim::avanca(int n) {
             }
         }
     }
+    if (jardineiro != nullptr) {
+        // O tempo passou, por isso o jardineiro recupera a os contadores para o próximo turno
+        jardineiro->resetCont();
+    }
     // Só mostra o jardim no fim de todos os instantes
     mostrar();
+}
+
+
+///////////////////////
+///Comandos SOLO
+////////
+
+void Jardim::inspectSolo(int l, int c) {
+    if (!PosValid(l, c)) {
+        return; // Ignora posições inválidas (útil para o loop do raio)
+    }
+
+    Celula& cell = celulas[l][c];
+
+    // Só mostra o cabeçalho se a função for chamada isoladamente,
+    // mas para listas grandes queremos algo compacto.
+    // Vamos fazer um formato limpo:
+    std::cout << "| Pos: " << LetraLinha(l) << LetraColuna(c) << " | "
+              << "Agua: " << cell.getAgua() << " | "
+              << "Nutri: " << cell.getNutrientes() << " | ";
+
+    // Informação da Planta
+    if (cell.getPlanta() != nullptr) {
+        Planta* p = cell.getPlanta();
+        std::cout << "Planta: " << p->getType()
+                  << " (Idade:" << p->getIdade()
+                  << " A:" << p->getAgua()
+                  << " N:" << p->getNutrientes() << ") ";
+    }
+
+    // Informação da Ferramenta
+    if (cell.getFerramenta() != nullptr) {
+        std::cout << "Ferramenta: " << cell.getFerramenta()->getType() << " ";
+    }
+
+    // Jardineiro
+    if (jardineiro != nullptr && jardineiro->noJardim() &&
+        jardineiro->getLine() == l && jardineiro->getCol() == c) {
+        std::cout << "[JARDINEIRO]";
+        }
+
+    std::cout << "\n";
+}
+
+void Jardim::listArea() {
+    std::cout << "=== Area Ocupada do Jardim ===\n";
+    bool vazio = true;
+
+    for (int i = 0; i < linhas; i++) {
+        for (int j = 0; j < colunas; j++) {
+            // Critério para "não totalmente vazia": Tem Planta OU Tem Ferramenta
+            // (Opcional: Podes incluir também se tiver o Jardineiro)
+            bool temCoisa = (celulas[i][j].getPlanta() != nullptr ||
+                             celulas[i][j].getFerramenta() != nullptr);
+
+            if (temCoisa) {
+                inspectSolo(i, j); // Reutiliza a função de inspeção
+                vazio = false;
+            }
+        }
+    }
+
+    if (vazio) {
+        std::cout << "O jardim esta vazio de objetos.\n";
+    }
 }

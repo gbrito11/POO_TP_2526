@@ -75,7 +75,6 @@ void Cacto::efeitoMorte(Celula& celula) {
 }
 
 bool Cacto::querMultiplicar() {
-
     return (this->nutrientes > Settings::Cacto::multiplica_nutrientes_maior &&
             this->agua > Settings::Cacto::multiplica_agua_maior);
 }

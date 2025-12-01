@@ -6,6 +6,7 @@
 #define TP_PLANTAEXÓTICA_H
 #include "Planta.h"
 
+
 class Exotica : public Planta {
 public:
     Exotica();
@@ -16,7 +17,7 @@ public:
     bool querMultiplicar() override;
     Planta* reproduz() override;
     bool deveMorrer() override;
-
+    int getChuva() override;
     void takeAgua() override;
     void takeNutrientes() override;
 

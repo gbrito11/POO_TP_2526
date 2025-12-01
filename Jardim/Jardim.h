@@ -38,9 +38,14 @@ public:
     int LetraNum(char l);//feito
 
     Celula& getCelula(int x, int y);
+    int getInstantes();
+
+    void listArea();
+    void inspectSolo(int l,int c);
 
 
 private:
+    int instantes;
     Celula **celulas;
     int linhas, colunas;
     Jardineiro* jardineiro;
