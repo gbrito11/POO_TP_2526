@@ -28,6 +28,7 @@ public:
     void removeFerr(int serialNum);
     void setFerr(int serialNum);
     void receberFerramenta(Ferramenta* f);
+    void largarMao();
 
     void resetCont();
 

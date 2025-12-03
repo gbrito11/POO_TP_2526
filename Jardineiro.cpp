@@ -6,6 +6,7 @@
 
 #include "Jardineiro.h"
 
+#include <algorithm>
 #include <iostream>
 
 #include "Settings.h"
@@ -26,6 +27,105 @@ Jardineiro::~Jardineiro() {
     ferramenta = nullptr;
 }
 
+
+
+
+
+
+
+//////////////////////////////////////////
+///Ferramentas
+///
+
+void Jardineiro::adicionaFerr(Ferramenta* ferramenta) {
+    // Verifica se a ferramenta é válida
+    if (ferramenta != nullptr) {
+        // Adiciona ao fim do vetor (Mochila)
+        this->ferramentas.push_back(ferramenta);
+
+         std::cout << "Ferramenta adicionada a mochila.\n";
+    }
+}
+
+void Jardineiro::removeFerr(int serialNum) {
+    for (auto it = ferramentas.begin(); it != ferramentas.end(); ++it) {
+
+        if ((*it)->getSerialNum() == serialNum) {
+            delete *it; // Destrói o objeto
+            ferramentas.erase(it); // Re0ove do vetor
+            std::cout << "Ferramenta " << serialNum << " removida.\n";
+            return;
+        }
+    }
+}
+
+void Jardineiro::setFerr(int serialNum) {
+    // 1. Se já tiver algo na mão, guarda primeiro
+    if (this->ferramenta != nullptr) {
+        largarMao();
+    }
+
+    // 2. Procura a ferramenta na mochila com um ciclo FOR normal
+    for (auto it = ferramentas.begin(); it != ferramentas.end(); ++it) {
+
+        // Verifica se é a ferramenta certa
+        if ((*it)->getSerialNum() == serialNum) {
+
+            // 3. Encontrou! Põe na mão
+            this->ferramenta = *it;
+
+            // 4. Remove da mochila usando o iterador
+            ferramentas.erase(it);
+
+            std::cout << "Pegaste na ferramenta " << this->ferramenta->getType()
+                      << " [ID:" << serialNum << "].\n";
+            return; // Sai da função, já encontraste
+        }
+    }
+
+    // Se o ciclo acabar e não retornou, é porque não encontrou
+    std::cout << "Nao tens nenhuma ferramenta com ID " << serialNum << " na mochila.\n";
+}
+
+
+Ferramenta* Jardineiro::getFerrameta() {
+    return ferramenta;
+}
+
+std::vector<Ferramenta*>& Jardineiro::getFerramentas() {
+    return ferramentas;
+}
+
+void Jardineiro::receberFerramenta(Ferramenta* f) {
+    if (f != nullptr) {
+        this->ferramentas.push_back(f);
+        std::cout << "Jardineiro tem uma nova ferramenta"  "\n";
+    }
+}
+
+
+void Jardineiro::largarMao() {
+    if (this->ferramenta != nullptr) {
+        this->ferramentas.push_back(this->ferramenta); // Devolve à mochila
+        std::cout << "Guardaste o " << this->ferramenta->getType() << " na mochila.\n";
+        this->ferramenta = nullptr; // Mão fica vazia
+    } else {
+        std::cout << "Nao tens nada na mao para largar.\n";
+    }
+}
+
+
+
+
+
+
+
+
+////////////////////////////////////////////////////
+///Contadoress
+///
+
+
 int Jardineiro::getMaxMove() {
     return Settings::Jardineiro::max_movimentos;
 }
@@ -42,19 +142,6 @@ int Jardineiro::getMaxColheitas() {
     return Settings::Jardineiro::max_colheitas;
 }
 
-void Jardineiro::adicionaFerr(Ferramenta* ferramenta) {
-    // implementar depois
-}
-
-void Jardineiro::removeFerr(int serialNum) {
-    // implementar depois
-    // NAO ESQUECER DE DESTRUIR A TOOL ANTES DE REMOVER
-}
-
-void Jardineiro::setFerr(int serialNum) {
-    // implementar depois
-}
-
 void Jardineiro::resetCont() {
     contMovimentos = 0;
     contPlantar = 0;
@@ -62,21 +149,43 @@ void Jardineiro::resetCont() {
     contEntradas = 0;
 }
 
-bool Jardineiro::setPos(int l, int c) {
-    if (podeMover()) {
-        this->line = l;
-        this->col = c;
-        contMovimentos++;
-        return true;
-    }
-    return false;
 
+void Jardineiro::decrementMove() {
+    contMovimentos--;
+}
+
+void Jardineiro::decrementEntradas() {
+    contEntradas--;
+}
+
+void Jardineiro::decrementPlantacoes() {
+    contPlantar--;
+}
+
+void Jardineiro::decrementColheitas() {
+    contColheitas--;
+}
+
+
+void Jardineiro::incrementaMovimentos() {
+    contMovimentos++;
+}
+
+void Jardineiro::incrementaPlantacoes() {
+    contPlantar++;
+}
+
+void Jardineiro::incrementarEntradas() {
+    contEntradas++;
 }
 
 
 
 
-
+/////////////////////////////////////7
+///oque o jardineiro pode fazer
+///
+///
 bool Jardineiro::podeMover() {
     return contMovimentos < Settings::Jardineiro::max_movimentos;
 }
@@ -98,37 +207,16 @@ bool Jardineiro::noJardim() {
 }
 
 
+
+
+
+
+
 void Jardineiro::setNoJardim(bool estado) {
     this->nojardim = estado;
 }
 
 
-
-void Jardineiro::decrementMove() {
-    contMovimentos--;
-}
-
-void Jardineiro::decrementEntradas() {
-    contEntradas--;
-}
-
-void Jardineiro::decrementPlantacoes() {
-    contPlantar--;
-}
-
-void Jardineiro::decrementColheitas() {
-    contColheitas--;
-}
-
-
-
-void Jardineiro::incrementaPlantacoes() {
-    contPlantar++;
-}
-
-void Jardineiro::incrementarEntradas() {
-    contEntradas++;
-}
 
 int Jardineiro::getLine() const {
     return line;
@@ -138,21 +226,15 @@ int Jardineiro::getCol() const {
     return col;
 }
 
-Ferramenta* Jardineiro::getFerrameta() {
-    return ferramenta;
-}
 
-std::vector<Ferramenta*>& Jardineiro::getFerramentas() {
-    return ferramentas;
-}
-
-void Jardineiro::receberFerramenta(Ferramenta* f) {
-    if (f != nullptr) {
-        this->ferramentas.push_back(f);
-        std::cout << "Jardineiro tem uma nova ferramenta"  "\n";
+bool Jardineiro::setPos(int l, int c) {
+    if (podeMover()) {
+        this->line = l;
+        this->col = c;
+        contMovimentos++;
+        return true;
     }
+    return false;
+
 }
 
-void Jardineiro::incrementaMovimentos() {
-    contMovimentos++;
-}

@@ -8,6 +8,9 @@
 
 
 class Dreno : public Ferramenta {
+    static const int CAPACIDADE_INICIAL = 100;
+    static const int DOSE_DRENAGEM = 10;
+    int capacidade;
     public:
     Dreno();
     ~Dreno() override;
