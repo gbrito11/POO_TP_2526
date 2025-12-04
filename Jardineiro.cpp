@@ -31,8 +31,6 @@ Jardineiro::~Jardineiro() {
 
 
 
-
-
 //////////////////////////////////////////
 ///Ferramentas
 ///
@@ -178,6 +176,10 @@ void Jardineiro::incrementaPlantacoes() {
 void Jardineiro::incrementarEntradas() {
     contEntradas++;
 }
+void Jardineiro::incrementaColheitas() {
+    contColheitas++;
+}
+
 
 
 

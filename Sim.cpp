@@ -276,20 +276,41 @@ void Sim::cmdPlanta( char l, char c ,std::string tipo) {
 
 void Sim::cmdColhe(char l, char c) {
     std::cout << "Colher planta na posição " << l << ","<< c << ".\n";
-    // Aqui vais chamar jardim->colherPlanta(pos)
+    if (jardim == nullptr) {
+        std::cout << "Erro: O jardim ainda nao foi criado.\n";
+    } else {
+        int lin = jardim->LetraNum(l);
+        int col = jardim->LetraNum(c);
+        jardim->colhePlanta(lin, col);
+
+    }
 }
 
 // Ferramentas--------------------------------------------------------
 void Sim::cmdLarga() {
     std::cout << "A largar ferramenta...\n";
-    // chama para largar a ferramenta
+    if (jardim != nullptr) {
+        jardim->jardineiroLargaFerramenta(); // <-- Chama o Jardim
+    } else {
+        std::cout << "Jardim nao criado.\n";
+    }
+
 }
 void Sim::cmdCompraFerramenta(char tipo) {
     std::cout << "A comprar ferramenta...\n";
-    // chama para comprar a ferramenta
+    if (jardim != nullptr) {
+        jardim->jardineiroCompraFerramenta(tipo); // <-- Chama o Jardim
+    } else {
+        std::cout << "Erro/Uso: compra <tipo>\n";
+    }
 }
 void Sim::cmdPega(int n) {
     std::cout<<"Pegou na ferramenta numero "<< n << std::endl;
+    if (jardim != nullptr) {
+        jardim->jardineiroPegaFerramenta(n); // <-- Chama o Jardim
+    } else {
+        std::cout << "Erro/Uso: pega <id>\n";
+    }
 }
 
 
@@ -375,7 +396,9 @@ void Sim::cmdLSolo(char l, char c, int n) {
 
 void Sim::cmdLferr() {
     std::cout << "Informação da ferramenta do jardineiro.\n";
-    // mostrar info da ferramenta
+    if (jardim != nullptr) {
+        jardim->listarFerramentasJardineiro(); // <-- Chama o Jardim
+    }
 }
 //COmados especificos-------------------------------------------
 void Sim::cmdAvanca(int n) {

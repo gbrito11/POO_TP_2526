@@ -18,18 +18,27 @@ public:
 
     bool entra(int l,int c);  //feito
     bool moverJardineiro(int i);
-    void addPlanta(int l, int c,std::string tipo); //feito
+    void addFerramenta(Ferramenta* f, int l, int c); //feito
+    Ferramenta* RandomFerramenta(); //feito
     void gerarNovaFerramenta();
+    void jardineiroPegaFerramenta(int id);
+    void jardineiroLargaFerramenta();
+    void jardineiroCompraFerramenta(char tipo);
+    void listarFerramentasJardineiro();
+
+
+    void addPlanta(int l, int c,std::string tipo); //feito
+    void colhePlanta(int l, int c);
 
     void avanca(int n);
 
-    void addFerramenta(Ferramenta* f, int l, int c); //feito
+
     void RandomCelula(int& x, int& y); //feito
     void limpaCelulas();
     char LetraLinha(int line);
     char LetraColuna(int column);
     char MostraCelula(int x, int y);
-    Ferramenta* RandomFerramenta(); //feito
+
     void mostrar(); //feito
     bool criada();
     bool PosValid(int x, int y); //feito

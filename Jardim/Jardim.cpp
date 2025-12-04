@@ -231,6 +231,60 @@ int Jardim::LetraNum(char letra) {
 ///////////////////////////////
 ///------------------------- JARDINEIRO
 /////////////////////////
+
+void Jardim::jardineiroPegaFerramenta(int id) {
+    if (jardineiro != nullptr) {
+        jardineiro->setFerr(id);
+    } else {
+        std::cout << "Jardineiro nao existe.\n";
+    }
+}
+
+void Jardim::jardineiroLargaFerramenta() {
+    if (jardineiro != nullptr) {
+        jardineiro->largarMao();
+    } else {
+        std::cout << "Jardineiro nao existe.\n";
+    }
+}
+
+void Jardim::jardineiroCompraFerramenta(char tipo) {
+    if (jardineiro == nullptr) return;
+
+    Ferramenta* f = nullptr;
+    if (tipo == 'g') f = new Regador();
+    else if (tipo == 'a') f = new Adubo();
+    else if (tipo == 't') f = new Tesoura();
+    else if (tipo == 'z') f = new Dreno();
+    else {
+        std::cout << "Ferramenta desconhecida.\n";
+        return;
+    }
+
+    jardineiro->adicionaFerr(f);
+    std::cout << "Ferramenta comprada!\n";
+}
+
+void Jardim::listarFerramentasJardineiro() {
+    if (jardineiro == nullptr) return;
+
+    std::vector<Ferramenta*>& mochila = jardineiro->getFerramentas();
+
+    std::cout << "=== Mochila ===\n";
+    if (mochila.empty()) std::cout << "(Vazia)\n";
+    else {
+        for (Ferramenta* f : mochila) {
+            std::cout << f->Info() << "\n";
+        }
+    }
+
+    Ferramenta* mao = jardineiro->getFerrameta();
+    std::cout << "=== Mao ===\n";
+    if (mao) std::cout << mao->Info() << "\n";
+    else std::cout << "(Vazia)\n";
+}
+
+
 bool Jardim::entra(int l,int c) {
     // 2. O Jardim verifica a permissão
     if (!this->jardineiro->podeEntrarSair()) {
@@ -341,6 +395,46 @@ void setJardineiro(Jardineiro* j, int l, int c) {
 
 }
 
+
+void Jardim::colhePlanta(int l, int c) {
+    // 1. Verificar se o Jardineiro existe
+    if (jardineiro == nullptr) {
+        std::cout << "Erro: Jardineiro nao existe.\n";
+        return;
+    }
+
+    // 2. O Guarda-Portão PEDE PERMISSÃO (Limite de 5 por turno)
+    if (!jardineiro->podeColher()) {
+        std::cout << "O Jardineiro ja colheu o maximo ("
+                  << jardineiro->getMaxColheitas() << ") plantas neste turno.\n";
+        return;
+    }
+
+    // 3. O Guarda-Portão VALIDA A POSIÇÃO
+    if (!PosValid(l, c)) {
+        std::cout << "Erro: Posicao invalida.\n";
+        return;
+    }
+
+    // 4. O Guarda-Portão VERIFICA SE HÁ PLANTA
+    if (celulas[l][c].getPlanta() == nullptr) {
+        std::cout << "Erro: Nao ha nenhuma planta nessa posicao para colher.\n";
+        return;
+    }
+
+    // 5. EXECUÇÃO (Apanhar a planta)
+    Planta* p = celulas[l][c].getPlanta();
+    std::cout << "O Jardineiro colheu uma " << p->getType() << " (Idade: " << p->getIdade() << ").\n";
+
+    // Remove a planta da memória e da célula
+    celulas[l][c].removePlanta();
+
+    // 6. ATUALIZAR O ESTADO (Jardineiro cansa-se)
+    jardineiro->incrementaColheitas();
+
+    mostrar(); // Atualiza o ecrã
+}
+
 /////////////////////////////77
 /// Tempo
 ///////////////////////////
@@ -354,7 +448,31 @@ void Jardim::avanca(int n) {
         // Opcional: Mostrar em que instante estamos
         std::cout << "--- Instante " << (instantes) << " ---\n";
         instantes++;
+        Ferramenta* f = jardineiro->getFerrameta(); // (Nota: tens um typo no nome, é 'getFerrameta')
+        if (jardineiro != nullptr && jardineiro->noJardim()) {
+            if (f != nullptr) {
+                int l = jardineiro->getLine();
+                int c = jardineiro->getCol();
 
+                // Avisa o utilizador
+                std::cout << "[Jardineiro] A usar " << f->getType()
+                      << " na posicao " << LetraLinha(l) << LetraColuna(c) << "...\n";
+
+                // USA A FERRAMENTA NA CÉLULA ATUAL
+                f->usa(celulas[l][c]);
+
+                // Verifica se a ferramenta se gastou/partiu
+                if (f->vazio()) {
+                    std::cout << "A ferramenta " << f->getType() << " acabou/partiu-se!\n";
+
+                    // Remove da mão (tens de ter implementado o largarMao ou similar que anule o ponteiro)
+                    // Como o 'vazio()' é true, podes simplesmente anulá-la ou removê-la da mochila.
+                    // Uma forma simples agora:
+                    jardineiro->largarMao(); // Guarda na mochila (vazia)
+                    jardineiro->removeFerr(f->getSerialNum()); // Remove permanentemente da mochila
+                }
+            }
+        }
         for (int i = 0; i < linhas; i++) {
             for (int j = 0; j < colunas; j++) {
 
