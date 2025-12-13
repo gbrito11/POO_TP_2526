@@ -51,6 +51,7 @@ public:
 
     void listArea();
     void inspectSolo(int l,int c);
+    void listPlants();
 
 
 private:

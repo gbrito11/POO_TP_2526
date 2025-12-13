@@ -248,21 +248,31 @@ void Jardim::jardineiroLargaFerramenta() {
     }
 }
 
+
+
 void Jardim::jardineiroCompraFerramenta(char tipo) {
     if (jardineiro == nullptr) return;
 
+    // 1. VERIFICAÇÃO NOVA: Já tem esta ferramenta?
+    if (jardineiro->temFerramenta(tipo)) {
+        std::cout << "Erro: Ja tens uma ferramenta desse tipo (" << tipo << ")!\n";
+        return; // Cancela a compra
+    }
+
+    // 2. Criação da Ferramenta (o código que já tinhas)
     Ferramenta* f = nullptr;
     if (tipo == 'g') f = new Regador();
     else if (tipo == 'a') f = new Adubo();
     else if (tipo == 't') f = new Tesoura();
     else if (tipo == 'z') f = new Dreno();
     else {
-        std::cout << "Ferramenta desconhecida.\n";
+        std::cout << "Erro: Tipo desconhecido.\n";
         return;
     }
 
+    // 3. Entrega
     jardineiro->adicionaFerr(f);
-    std::cout << "Ferramenta comprada!\n";
+    std::cout << "Compraste um " << f->getType() << " (ID: " << f->getSerialNum() << ").\n";
 }
 
 void Jardim::listarFerramentasJardineiro() {
@@ -623,4 +633,19 @@ void Jardim::listArea() {
     if (vazio) {
         std::cout << "O jardim esta vazio de objetos.\n";
     }
+}
+
+void Jardim::listPlants() {
+    std::cout << "=== Lista de Plantas ===\n";
+    bool encontrou = false;
+    for (int i = 0; i < linhas; i++) {
+        for (int j = 0; j < colunas; j++) {
+            if (celulas[i][j].getPlanta() != nullptr) {
+                // Reutiliza o inspectSolo ou faz um cout personalizado
+                inspectSolo(i, j);
+                encontrou = true;
+            }
+        }
+    }
+    if (!encontrou) std::cout << "Nao ha plantas no jardim.\n";
 }

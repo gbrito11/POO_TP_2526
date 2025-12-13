@@ -112,6 +112,23 @@ void Jardineiro::largarMao() {
     }
 }
 
+// Em Jardineiro.cpp
+
+bool Jardineiro::temFerramenta(char tipo) {
+    // Percorre todas as ferramentas na mochila
+    for (Ferramenta* f : ferramentas) {
+        if (f->getType() == tipo) {
+            return true; // Encontrei! Já tens uma igual.
+        }
+    }
+
+    // Se a ferramenta que tens na mão for desse tipo, também conta!
+    if (ferramenta != nullptr && ferramenta->getType() == tipo) {
+        return true;
+    }
+
+    return false; // Não tens nenhuma deste tipo
+}
 
 
 

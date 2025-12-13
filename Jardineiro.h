@@ -29,6 +29,8 @@ public:
     void setFerr(int serialNum);
     void receberFerramenta(Ferramenta* f);
     void largarMao();
+    bool temFerramenta(char tipo);
+
 
     void resetCont();
 

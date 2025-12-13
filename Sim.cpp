@@ -371,14 +371,18 @@ void Sim::cmdInfo() {
 
 void Sim::cmdLPlantas() {
     std::cout << "Informação de todas as plantas no jardim.\n";
-    // listar todas as plantas
+    jardim->listPlants();
 }
 void Sim::cmdLPlanta(char l,char c) {
     std::cout << "Informação da planta na posição " << l << "," << c << ".\n";
-    // mostrar info da planta na posicao
+    int lin=jardim->LetraNum(l);
+    int col=jardim->LetraNum(c);
+    jardim->inspectSolo(lin,col);
+    
 }
 void Sim::cmdLArea() {
     std::cout << "Informação da área do jardim.\n";
+    jardim->listArea();
 }
 
 void Sim::cmdLSolo(char l, char c) {

@@ -12,6 +12,7 @@
 
 Dreno::Dreno() : Ferramenta() {
     type = 'Z';
+    capacidade = CAPACIDADE_INICIAL;
 }
 
 Dreno::~Dreno() {}
