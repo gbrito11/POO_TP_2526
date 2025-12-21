@@ -705,16 +705,22 @@ void Jardim::gravarJogo(std::string nomeFicheiro) {
 //                   AUXILIAR DE LIMPEZA
 // ---------------------------------------------------------
 void Jardim::limparTudo() {
-    // Apaga o jardineiro antigo
+    // 1. Apagar o Jardineiro
     if (jardineiro != nullptr) {
         delete jardineiro;
         jardineiro = nullptr;
     }
-    // As células limpam-se ao redimensionar ou no destrutor,
-    // mas aqui não precisamos de fazer delete manual se usares vector<vector<Celula>>.
-    // Se usares ponteiros manuais, terias de apagar a matriz aqui.
-}
 
+    // 2. Apagar a Matriz antiga (CRÍTICO!)
+    // Tens de verificar se 'celulas' existe antes de tentar apagar
+    if (celulas != nullptr) {
+        for (int i = 0; i < linhas; i++) {
+            delete[] celulas[i]; // Apaga as colunas de cada linha
+        }
+        delete[] celulas; // Apaga o array de linhas
+        celulas = nullptr; // Mete a null para sabermos que está limpo
+    }
+}
 void Jardim::recuperarJogo(std::string nomeFicheiro) {
     std::ifstream f(nomeFicheiro);
     if (!f.is_open()) {
@@ -729,23 +735,8 @@ void Jardim::recuperarJogo(std::string nomeFicheiro) {
     int ultL = -1, ultC = -1; // Guarda a posição da última célula lida
 
     while (f >> cmd) {
-        if (cmd == "JARDIM") {
-            int l, c, t;
-            f >> l >> c >> t;
 
-            // Define as novas variáveis
-            linhas = l;
-            colunas = c;
-            instantes = t;
-
-            // --- AQUI ESTÁ A CORREÇÃO (Criação manual da Matriz) ---
-            std::cout << "A recriar mapa " << linhas << "x" << colunas << "...\n";
-            celulas = new Celula*[linhas]; // Cria array de linhas
-            for (int i = 0; i < linhas; i++) {
-                celulas[i] = new Celula[colunas]; // Cria as colunas para cada linha
-            }
-        }
-        else if (cmd == "JARDINEIRO") {
+        if (cmd == "JARDINEIRO") {
             int l, c;
             f >> l >> c;
             // Cria novo jardineiro na posição carregada

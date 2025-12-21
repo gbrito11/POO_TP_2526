@@ -4,6 +4,9 @@
 #include <iostream>
 #include <sstream>
 #include "Sim.h"
+
+#include <fstream>
+
 #include "Jardim/Jardim.h"
 #include "Jardineiro.h"
 #include "Planta/Exotica.h"
@@ -422,7 +425,49 @@ void Sim::cmdGrava(std::string jogo){
 }
 
 void Sim::cmdRecupera(std::string jogo) {
-    std::cout<<"A recuperar jogo..."<<std::endl;
+    std::cout << "A recuperar jogo..." << std::endl;
+
+    std::ifstream ficheiro(jogo);
+
+    if (!ficheiro.is_open()) {
+        std::cerr << "Erro ao abrir o ficheiro " << jogo << std::endl;
+        return;
+    }
+
+    std::string cabecalho; // Variável para ler a palavra "JARDIM"
+    int linhas, colunas;
+
+    // 1. Ler a palavra primeiro
+    ficheiro >> cabecalho;
+
+    // Opcional: Verificar se o ficheiro é válido
+    if (cabecalho != "JARDIM") {
+        std::cerr << "Erro: O ficheiro nao comeca com 'JARDIM'." << std::endl;
+        return;
+    }
+
+    // 2. Agora sim, ler os números (15 e 15)
+    ficheiro >> linhas >> colunas;
+
+    if (ficheiro.fail()) {
+        std::cerr << "Erro: Formato do ficheiro invalido (dimensoes)." << std::endl;
+        return;
+    }
+
+    std::cout << "A preparar jardim de tamanho " << linhas << "x" << colunas << "..." << std::endl;
+
+    if (jardim != nullptr) {
+        delete jardim;
+        jardim = nullptr;
+    }
+
+    // Cria o jardim com as dimensões lidas
+    jardim = new Jardim(linhas, colunas);
+
+    // Fecha este ficheiro porque o método recuperarJogo vai abri-lo de novo
+    ficheiro.close();
+
+    // Chama o método do jardim para ler o resto
     jardim->recuperarJogo(jogo);
 }
 
