@@ -17,8 +17,7 @@ public:
     void usa(Celula& cell) override;
     bool vazio() override;
     std::string Info() override;
-private:
-    int capacidade;
+
 
 };
 

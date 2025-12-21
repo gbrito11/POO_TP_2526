@@ -21,3 +21,12 @@ int Ferramenta::getSerialNum() {
 char Ferramenta::getType() {
     return type;
 }
+int Ferramenta::getCapacidade() {
+    return capacidade;
+}
+void Ferramenta::setSerialNum(int s) {
+    this->serialNum = s;
+}
+void Ferramenta::setCapacidade(int c) {
+    this->capacidade = c;
+}

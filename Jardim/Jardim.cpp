@@ -18,6 +18,7 @@
 #include "../Planta/ErvaDaninha.h"
 #include "../Planta/Exotica.h"
 #include <cstdlib>
+#include <fstream>
 
 
 Jardim::Jardim(int c, int l) : jardineiro(nullptr), celulas(nullptr) {
@@ -648,4 +649,158 @@ void Jardim::listPlants() {
         }
     }
     if (!encontrou) std::cout << "Nao ha plantas no jardim.\n";
+}
+
+
+
+// ---------------------------------------------------------
+//                   GRAVAR O JOGO
+// ---------------------------------------------------------
+void Jardim::gravarJogo(std::string nomeFicheiro) {
+    std::ofstream f(nomeFicheiro); // Abre ficheiro para escrita
+
+    if (!f.is_open()) {
+        std::cout << "Erro: Nao foi possivel criar o ficheiro " << nomeFicheiro << ".\n";
+        return;
+    }
+
+    // 1. Dados Globais
+    f << "JARDIM " << linhas << " " << colunas << " " << instantes << "\n";
+
+    // 2. Dados do Jardineiro
+    if (jardineiro != nullptr) {
+        f << "JARDINEIRO " << jardineiro->getLine() << " " << jardineiro->getCol() << "\n";
+
+        // 2.2 Mochila
+        std::vector<Ferramenta*>& mochila = jardineiro->getFerramentas();
+        f << "MOCHILA " << mochila.size() << "\n";
+        for (Ferramenta* ferr : mochila) {
+             f << ferr->getType() << " " << ferr->getSerialNum() << " " << ferr->getCapacidade() << "\n";
+        }
+    } else {
+        f << "NO_JARDINEIRO\n";
+    }
+
+    // 3. Dados das Células e Plantas
+    for (int i = 0; i < linhas; i++) {
+        for (int j = 0; j < colunas; j++) {
+            // Guarda: CELULA Linha Coluna Agua Nutrientes
+            f << "CELULA " << i << " " << j << " "
+              << celulas[i][j].getAgua() << " " << celulas[i][j].getNutrientes() << "\n";
+
+            Planta* p = celulas[i][j].getPlanta();
+            if (p != nullptr) {
+                // Guarda: PLANTA Tipo Idade
+                // (Se tiveres mais dados internos nas plantas, adiciona aqui)
+                f << "PLANTA " << p->getType() << " " << p->getIdade() << "\n";
+            }
+        }
+    }
+
+    f.close();
+    std::cout << "Jogo gravado com sucesso em '" << nomeFicheiro << "'.\n";
+}
+
+// ---------------------------------------------------------
+//                   AUXILIAR DE LIMPEZA
+// ---------------------------------------------------------
+void Jardim::limparTudo() {
+    // Apaga o jardineiro antigo
+    if (jardineiro != nullptr) {
+        delete jardineiro;
+        jardineiro = nullptr;
+    }
+    // As células limpam-se ao redimensionar ou no destrutor,
+    // mas aqui não precisamos de fazer delete manual se usares vector<vector<Celula>>.
+    // Se usares ponteiros manuais, terias de apagar a matriz aqui.
+}
+
+void Jardim::recuperarJogo(std::string nomeFicheiro) {
+    std::ifstream f(nomeFicheiro);
+    if (!f.is_open()) {
+        std::cout << "Erro: Ficheiro '" << nomeFicheiro << "' nao encontrado.\n";
+        return;
+    }
+    std::cout<< "Jogo a ser recuperado";
+    // Primeiro limpamos tudo o que existe atualmente
+    limparTudo();
+
+    std::string cmd;
+    int ultL = -1, ultC = -1; // Guarda a posição da última célula lida
+
+    while (f >> cmd) {
+        if (cmd == "JARDIM") {
+            int l, c, t;
+            f >> l >> c >> t;
+
+            // Define as novas variáveis
+            linhas = l;
+            colunas = c;
+            instantes = t;
+
+            // --- AQUI ESTÁ A CORREÇÃO (Criação manual da Matriz) ---
+            std::cout << "A recriar mapa " << linhas << "x" << colunas << "...\n";
+            celulas = new Celula*[linhas]; // Cria array de linhas
+            for (int i = 0; i < linhas; i++) {
+                celulas[i] = new Celula[colunas]; // Cria as colunas para cada linha
+            }
+        }
+        else if (cmd == "JARDINEIRO") {
+            int l, c;
+            f >> l >> c;
+            // Cria novo jardineiro na posição carregada
+            jardineiro = new Jardineiro();
+            jardineiro->setPos(l, c);
+        }
+
+        else if (cmd == "MOCHILA") {
+            int qtd; f >> qtd;
+            for(int i=0; i<qtd; i++) {
+                char tipo; int id, cap; f >> tipo >> id >> cap;
+
+                Ferramenta* nova = nullptr;
+                if (tipo == 'g') nova = new Regador();
+                else if (tipo == 'a') nova = new Adubo();
+                else if (tipo == 't') nova = new Tesoura();
+                else if (tipo == 'z') nova = new Dreno();
+
+                if (nova) {
+                    nova->setSerialNum(id);
+                    nova->setCapacidade(cap);
+                    jardineiro->adicionaFerr(nova);
+                }
+            }
+        }
+        else if (cmd == "CELULA") {
+            int ag, nu;
+            f >> ultL >> ultC >> ag >> nu; // Atualiza as coordenadas atuais
+
+            // Verifica se as coordenadas são seguras antes de usar
+            if (ultL >= 0 && ultL < linhas && ultC >= 0 && ultC < colunas) {
+                celulas[ultL][ultC].setAgua(ag);
+                celulas[ultL][ultC].setNutrientes(nu);
+            }
+        }
+        else if (cmd == "PLANTA") {
+            char tipo; int idade;
+            f >> tipo >> idade;
+
+            // Usa ultL e ultC para saber onde colocar a planta
+            if (ultL >= 0 && ultL < linhas && ultC >= 0 && ultC < colunas) {
+                if (tipo == 'r') celulas[ultL][ultC].setPlanta(new Roseira());
+                else if (tipo == 'c') celulas[ultL][ultC].setPlanta(new Cacto());
+                else if (tipo == 'e') celulas[ultL][ultC].setPlanta(new ErvaDaninha());
+                else if (tipo == 'x') celulas[ultL][ultC].setPlanta(new Exotica());
+
+                if (celulas[ultL][ultC].getPlanta()) {
+                    celulas[ultL][ultC].getPlanta()->setIdade(idade);
+                }
+            }
+        }
+    }
+    f.close();
+    std::cout << "Jogo carregado com sucesso!\n";
+
+    // Atualiza a vista do utilizador
+    mostrar();
 }

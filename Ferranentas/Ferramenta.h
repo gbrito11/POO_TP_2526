@@ -13,7 +13,7 @@ class Ferramenta {
 protected:
     int serialNum;
     static int nextSerialNum; // contador global para o numero de serie
-
+    int capacidade;
     char type;
 
 public:
@@ -24,9 +24,11 @@ public:
     virtual bool vazio() = 0;  // verificar se está gasta
     virtual std::string Info() = 0;  // info para comando lferr
 
-
-
+    int getCapacidade();
+    void setCapacidade(int c);
     int getSerialNum();
+    void setSerialNum(int s);
+
 
     char getType();
 };

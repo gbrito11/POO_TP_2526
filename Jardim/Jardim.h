@@ -53,6 +53,11 @@ public:
     void inspectSolo(int l,int c);
     void listPlants();
 
+    //gravar e recuperar
+    void gravarJogo(std::string nomeFicheiro);
+    void limparTudo();
+    void recuperarJogo(std::string nomeFicheiro);
+
 
 private:
     int instantes;

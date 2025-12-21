@@ -36,6 +36,7 @@ class Planta {
 
     bool Viva();
 
+    int setIdade(int x);
     int getAgua();
     int getNutrientes();
     int getIdade();

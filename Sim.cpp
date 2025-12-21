@@ -418,12 +418,12 @@ void Sim::cmdFim() {
 
 void Sim::cmdGrava(std::string jogo){
     std::cout<<"A gravar jogo..."<<std::endl;
-    //GRavar o jogo
+    jardim->gravarJogo(jogo);
 }
 
 void Sim::cmdRecupera(std::string jogo) {
     std::cout<<"A recuperar jogo..."<<std::endl;
-    //REcuperar o jogo
+    jardim->recuperarJogo(jogo);
 }
 
 void Sim::cmdApaga(std::string jogo) {

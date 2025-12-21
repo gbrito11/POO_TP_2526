@@ -17,8 +17,7 @@ public:
     bool vazio() override;
     std::string Info() override;
 
-private:
-    int capacidade;
+
 
 };
 

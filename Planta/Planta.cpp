@@ -20,6 +20,9 @@ Planta::~Planta() {}
 char Planta::getType() {
     return type;
 }
+int Planta::setIdade(int x) {
+    this->idade=x;
+}
 
 std::string Planta::getBeauty() {
     return beauty;

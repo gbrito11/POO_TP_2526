@@ -14,6 +14,7 @@
 
 Tesoura::Tesoura() : Ferramenta() {
     type = 't';
+    capacidade=-1;
 }
 
 Tesoura::~Tesoura() {}
