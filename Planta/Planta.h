@@ -35,8 +35,7 @@ class Planta {
     virtual void darNutrientes() = 0;
 
     bool Viva();
-
-    int setIdade(int x);
+    void setIdade(int x);
     int getAgua();
     int getNutrientes();
     int getIdade();
@@ -56,6 +55,5 @@ protected:
 
 
 };
-
 
 #endif //TP_PLANTA_H

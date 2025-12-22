@@ -20,7 +20,7 @@ Planta::~Planta() {}
 char Planta::getType() {
     return type;
 }
-int Planta::setIdade(int x) {
+void Planta::setIdade(int x) {
     this->idade=x;
 }
 

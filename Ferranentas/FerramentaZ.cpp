@@ -11,7 +11,7 @@
 #include "../Planta/Planta.h"
 
 Dreno::Dreno() : Ferramenta() {
-    type = 'Z';
+    type = 'z';
     capacidade = CAPACIDADE_INICIAL;
 }
 

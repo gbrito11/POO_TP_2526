@@ -476,8 +476,30 @@ void Sim::cmdApaga(std::string jogo) {
     //Apagar o jogo
 }
 
-void Sim::cmdExecuta(std::string comandos) {
-    std::cout<<"A executar comandos..."<<std::endl;
-    //executa comandos de um ficheiro para uo jogo
+void Sim::cmdExecuta(std::string nomeFicheiro) {
+    // Adicionar extensão .txt se o utilizador se esquecer
+
+    std::ifstream ficheiro(nomeFicheiro);
+
+    if (!ficheiro.is_open()) {
+        std::cerr << "Erro: Nao foi possivel abrir o ficheiro de comandos '" << nomeFicheiro << "'.\n";
+        return;
+    }
+
+    std::cout << "--- A iniciar execucao de comandos do ficheiro: " << nomeFicheiro << " ---\n";
+
+    std::string linha;
+    while (std::getline(ficheiro, linha)) {
+        // Ignorar linhas vazias para não dar spam
+        if (linha.empty()) continue;
+
+        std::cout << ">> Executando: " << linha << std::endl;
+
+        // Reutilizamos a tua função que já processa tudo!
+        processarComando(linha);
+    }
+
+    ficheiro.close();
+    std::cout << "--- Fim da execucao de comandos ---\n";
 }
 

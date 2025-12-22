@@ -657,7 +657,7 @@ void Jardim::listPlants() {
 //                   GRAVAR O JOGO
 // ---------------------------------------------------------
 void Jardim::gravarJogo(std::string nomeFicheiro) {
-    std::ofstream f(nomeFicheiro); // Abre ficheiro para escrita
+    std::ofstream f(nomeFicheiro);
 
     if (!f.is_open()) {
         std::cout << "Erro: Nao foi possivel criar o ficheiro " << nomeFicheiro << ".\n";
@@ -671,28 +671,36 @@ void Jardim::gravarJogo(std::string nomeFicheiro) {
     if (jardineiro != nullptr) {
         f << "JARDINEIRO " << jardineiro->getLine() << " " << jardineiro->getCol() << "\n";
 
-        // 2.2 Mochila
+        // Mochila
         std::vector<Ferramenta*>& mochila = jardineiro->getFerramentas();
         f << "MOCHILA " << mochila.size() << "\n";
         for (Ferramenta* ferr : mochila) {
-             f << ferr->getType() << " " << ferr->getSerialNum() << " " << ferr->getCapacidade() << "\n";
+            f << ferr->getType() << " " << ferr->getSerialNum() << " " << ferr->getCapacidade() << "\n";
         }
     } else {
         f << "NO_JARDINEIRO\n";
     }
 
-    // 3. Dados das Células e Plantas
+    // 3. Dados das Células, Plantas e FERRAMENTAS NO CHÃO
     for (int i = 0; i < linhas; i++) {
         for (int j = 0; j < colunas; j++) {
-            // Guarda: CELULA Linha Coluna Agua Nutrientes
+            // Guarda dados da célula
             f << "CELULA " << i << " " << j << " "
               << celulas[i][j].getAgua() << " " << celulas[i][j].getNutrientes() << "\n";
 
+            // Guarda Planta (se houver)
             Planta* p = celulas[i][j].getPlanta();
             if (p != nullptr) {
-                // Guarda: PLANTA Tipo Idade
-                // (Se tiveres mais dados internos nas plantas, adiciona aqui)
                 f << "PLANTA " << p->getType() << " " << p->getIdade() << "\n";
+            }
+
+            // --- NOVO: Guarda Ferramenta no chão (se houver) ---
+            Ferramenta* ferr = celulas[i][j].getFerramenta();
+            if (ferr != nullptr) {
+                // Formato: FERRAMENTA <tipo> <id> <capacidade>
+                f << "FERRAMENTA " << ferr->getType() << " "
+                  << ferr->getSerialNum() << " "
+                  << ferr->getCapacidade() << "\n";
             }
         }
     }
@@ -705,30 +713,25 @@ void Jardim::gravarJogo(std::string nomeFicheiro) {
 //                   AUXILIAR DE LIMPEZA
 // ---------------------------------------------------------
 void Jardim::limparTudo() {
-    // 1. Apagar o Jardineiro
-    if (jardineiro != nullptr) {
-        delete jardineiro;
-        jardineiro = nullptr;
-    }
-
-    // 2. Apagar a Matriz antiga (CRÍTICO!)
-    // Tens de verificar se 'celulas' existe antes de tentar apagar
-    if (celulas != nullptr) {
-        for (int i = 0; i < linhas; i++) {
-            delete[] celulas[i]; // Apaga as colunas de cada linha
+    for (int i = 0; i < linhas; i++) {
+        for (int j = 0; j < colunas; j++) {
+            // Se houver ferramenta, removemos e apagamos da memória
+            if (celulas[i][j].getFerramenta() != nullptr) {
+                Ferramenta* f = celulas[i][j].largarFerramenta(); // Remove da célula
+                delete f; // Apaga da memória para não haver leaks
+            }
         }
-        delete[] celulas; // Apaga o array de linhas
-        celulas = nullptr; // Mete a null para sabermos que está limpo
     }
+    std::cout << "Ferramentas iniciais limpas.\n";
 }
+
 void Jardim::recuperarJogo(std::string nomeFicheiro) {
     std::ifstream f(nomeFicheiro);
     if (!f.is_open()) {
         std::cout << "Erro: Ficheiro '" << nomeFicheiro << "' nao encontrado.\n";
         return;
     }
-    std::cout<< "Jogo a ser recuperado";
-    // Primeiro limpamos tudo o que existe atualmente
+    std::cout<< "Jogo a ser recuperado"<< std::endl;
     limparTudo();
 
     std::string cmd;
@@ -745,7 +748,8 @@ void Jardim::recuperarJogo(std::string nomeFicheiro) {
         }
 
         else if (cmd == "MOCHILA") {
-            int qtd; f >> qtd;
+            int qtd;
+            f >> qtd;
             for(int i=0; i<qtd; i++) {
                 char tipo; int id, cap; f >> tipo >> id >> cap;
 
@@ -770,6 +774,30 @@ void Jardim::recuperarJogo(std::string nomeFicheiro) {
             if (ultL >= 0 && ultL < linhas && ultC >= 0 && ultC < colunas) {
                 celulas[ultL][ultC].setAgua(ag);
                 celulas[ultL][ultC].setNutrientes(nu);
+            }
+        }
+        else if (cmd == "FERRAMENTA") {
+            char tipo;
+            int id, cap;
+            f >> tipo >> id >> cap;
+
+            // Criar a ferramenta baseada no tipo lido
+            Ferramenta* nova = nullptr;
+            if (tipo == 'g') nova = new Regador();
+            else if (tipo == 'a') nova = new Adubo();
+            else if (tipo == 't') nova = new Tesoura();
+            else if (tipo == 'z') nova = new Dreno(); // Ou a tua ferramenta Z
+
+            if (nova != nullptr) {
+                nova->setSerialNum(id);
+                nova->setCapacidade(cap);
+
+                // Colocar na célula (usa ultL e ultC que foram lidos no comando "CELULA" imediatamente antes)
+                if (ultL >= 0 && ultL < linhas && ultC >= 0 && ultC < colunas) {
+                    celulas[ultL][ultC].setFerramenta(nova);
+                } else {
+                    delete nova; // Se a posição for inválida, apaga para não haver memory leak
+                }
             }
         }
         else if (cmd == "PLANTA") {

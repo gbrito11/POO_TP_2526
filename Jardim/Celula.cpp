@@ -15,7 +15,7 @@ char Celula::mostrar() const {
 
 
 Celula::Celula() : agua(0), nutrientes(0), planta(nullptr), ferramenta(nullptr), type(' ') {
-    // IMPORTANTE: Inicializar todos os ponteiros a nullptr para evitar segmentation errors
+    planta = nullptr;
 }
 
 Celula::~Celula() {

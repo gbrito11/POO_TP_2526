@@ -31,4 +31,7 @@ add_executable(TP main.cpp
         Planta/Planta.cpp
         Planta/Planta.h
         Ferranentas/FerramentaZ.cpp
-        Ferranentas/FerramentaZ.h)
+        Ferranentas/FerramentaZ.h
+        Settings.h
+
+)
